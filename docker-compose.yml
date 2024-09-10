@@ -1,0 +1,20 @@
+services:
+  postgres:
+    container_name: postgres-sql-car-pool
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: mysecretpassword
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: book_db
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+
+volumes:
+  postgres:
+    driver: local
