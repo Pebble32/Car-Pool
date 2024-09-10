@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("offers")
 @RequiredArgsConstructor
@@ -17,6 +19,8 @@ public class RideOfferController {
     private final RideOfferService rideOfferService;
 
     @GetMapping
-    public ResponseEntity<RideOfferResponse>
+    public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
+        return ResponseEntity.ok(rideOfferService.findAllRideOffers());
+    }
 
 }
