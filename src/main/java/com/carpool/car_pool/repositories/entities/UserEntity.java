@@ -35,6 +35,14 @@ public class UserEntity implements Principal  {
 
     private String password;
 
+    private String firstname;
+
+    private String lastname;
+
+    private String profilePicture;
+
+    private String phoneNumber;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDate createdDate;
@@ -52,5 +60,9 @@ public class UserEntity implements Principal  {
     @Override
     public String getName() {
         return email;
+    }
+
+    public String getFullName() {
+        return firstname + " " + lastname;
     }
 }
