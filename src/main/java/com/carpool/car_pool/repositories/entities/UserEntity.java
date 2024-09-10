@@ -30,10 +30,10 @@ public class UserEntity implements Principal  {
     @GeneratedValue
     private Long id;
 
-    private String password;
-
     @Column(unique = true)
     private String email;
+
+    private String password;
 
     @CreatedDate
     @Column(updatable = false)
