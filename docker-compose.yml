@@ -6,12 +6,12 @@ services:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: mysecretpassword
       PGDATA: /var/lib/postgresql/data
-      POSTGRES_DB: book_db
+      POSTGRES_DB: car_pool
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - "6969:5432"
     restart: unless-stopped
 
 
