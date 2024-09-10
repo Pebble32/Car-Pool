@@ -1,4 +1,4 @@
-package com.carpool.car_pool.entities;
+package com.carpool.car_pool.repositories.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,11 +1,11 @@
-package com.carpool.car_pool.entities;
+package com.carpool.car_pool.repositories.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,17 +20,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class RideOfferEntity {
-
+public class RideRequestsEntity {
+    
     @Id
     @GeneratedValue
     private Long id;
 
+    @ManyToOne
+    private RideOfferEntity rideOffer;
 
-    @ManyToMany(mappedBy = "rideOffers")
+    @ManyToMany(mappedBy = "rideRequests")
     @JsonIgnore
-    private List<UserEntity> users;
-
-    @OneToMany(mappedBy = "rideOffer")
-    private List<RideRequestsEntity> rideRequests;
+    private List<UserEntity> user;
 }
