@@ -13,31 +13,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.CREATED;
-
-
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication & Registration")
-public class AuthenticationController {
+public class AuthController {
 
     private final AuthenticationService authService;
 
+    /**
+     * Endpoint to authenticate a user.
+     *
+     * @param authenticationRequest The authentication request containing email and password.
+     * @return ResponseEntity with HTTP status.
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(
             @RequestBody @Valid AuthenticationRequest authenticationRequest
     ) {
         authService.authenticate(authenticationRequest);
-        return ResponseEntity.status(ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    /**
+     * Endpoint to register a new user.
+     *
+     * @param registerRequest The registration request containing user details.
+     * @return ResponseEntity with HTTP status.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody @Valid RegisterRequest registerRequest
     ) {
         authService.register(registerRequest);
-        return ResponseEntity.status(CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
