@@ -29,8 +29,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+//@EntityListeners(AuditingEntityListener.class)
+//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RideRequestsEntity {
     
     @Id
@@ -46,11 +46,11 @@ public class RideRequestsEntity {
     @JoinColumn(name = "requester_id", nullable = false)
     private UserEntity requester;
 
-    @CreatedDate
+    //@CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    @LastModifiedDate
+    //@LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 }

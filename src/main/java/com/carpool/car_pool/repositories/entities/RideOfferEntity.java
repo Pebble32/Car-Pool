@@ -30,8 +30,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+//@EntityListeners(AuditingEntityListener.class)
+//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RideOfferEntity {
 
     @Id
@@ -55,11 +55,11 @@ public class RideOfferEntity {
     @OneToMany(mappedBy = "rideOffer")
     private List<RideRequestsEntity> rideRequests;
 
-    @CreatedDate
+    //@CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    @LastModifiedDate
+    //@LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 }

@@ -17,5 +17,7 @@ public class RideOfferResponse {
     private Integer availableSeats;
     private LocalDateTime departureTime;
     private RideStatus status;
+    private String creatorEmail;
     private LocalDateTime lastModified;
+    private LocalDateTime createdAt;
 }

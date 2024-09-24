@@ -1,6 +1,7 @@
-package com.carpool.car_pool.services;
+package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.services.RideOfferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

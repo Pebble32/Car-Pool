@@ -28,8 +28,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+//@EntityListeners(AuditingEntityListener.class)
+//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserEntity implements Principal  {
 
     @Id
@@ -49,11 +49,11 @@ public class UserEntity implements Principal  {
 
     private String phoneNumber;
 
-    @CreatedDate
+    //@CreatedDate
     @Column(updatable = false)
     private LocalDate createdDate;
 
-    @LastModifiedDate
+    //@LastModifiedDate
     @Column(insertable = false)
     private LocalDate lastModifiedDate;
 
