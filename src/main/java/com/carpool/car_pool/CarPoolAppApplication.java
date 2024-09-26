@@ -2,8 +2,11 @@ package com.carpool.car_pool;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class CarPoolAppApplication {
     // dkm2@hi.is
     // lks17hi.is

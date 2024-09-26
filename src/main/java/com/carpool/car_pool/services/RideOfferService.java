@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,9 +30,22 @@ public class RideOfferService {
                 .toList();
     }
 
-    public RideOfferResponse createRideOffer(
+    // TODO: If security is implemented change to ApplicationAuditAware
+    //  with UserPrincipal using Jwt tokens to keep track of who is logged in and sending requests
+    public Long createRideOffer(
             @Valid RideOfferRequest request,
-            Authentication authenticatedUser) {
-        var user = userRepository.findByEmail()
+            String userEmail) {
+        var user = userRepository.findByEmail(userEmail)
+                //  TODO: Better exception handling UserNotFoundException
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+
+        RideOfferEntity rideOffer = rideOfferConverter.dtoToEntity(request);
+        rideOffer.setCreator(user);
+
+        // TODO: Delete this line after AuditAware is implemented
+        rideOffer.setCreatedDate(LocalDateTime.now());
+        
+        return rideOfferRepository.save(rideOffer).getId();
+
     }
 }
