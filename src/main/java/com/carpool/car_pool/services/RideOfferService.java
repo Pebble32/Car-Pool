@@ -44,7 +44,7 @@ public class RideOfferService {
 
         // TODO: Delete this line after AuditAware is implemented
         rideOffer.setCreatedDate(LocalDateTime.now());
-        
+
         return rideOfferRepository.save(rideOffer).getId();
 
     }
