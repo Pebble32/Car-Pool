@@ -14,6 +14,7 @@ public class RideOfferResponse {
 
     private Long id;
     private String startLocation;
+    private String endLocation;
     private Integer availableSeats;
     private LocalDateTime departureTime;
     private RideStatus status;
