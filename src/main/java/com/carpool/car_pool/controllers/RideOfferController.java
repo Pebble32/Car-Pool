@@ -1,13 +1,13 @@
 package com.carpool.car_pool.controllers;
 
+import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.services.RideOfferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +22,15 @@ public class RideOfferController {
     @GetMapping
     public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
         return ResponseEntity.ok(rideOfferService.findAllRideOffers());
+    }
+
+    @PostMapping
+    public ResponseEntity<Long> createRideOffer(
+            @RequestBody @Valid RideOfferRequest rideOfferRequest,
+            // TODO: This is ugly and bad solution should be changed after implementing security
+            @RequestHeader("X-User-Email") String userEmail
+    ) {
+        return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, userEmail));
     }
 
 }
