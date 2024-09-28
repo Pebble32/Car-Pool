@@ -2,6 +2,9 @@ package com.carpool.car_pool.repositories.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,8 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-//@EntityListeners(AuditingEntityListener.class)
-//@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AuditingEntityListener.class)
 public class RideOfferEntity {
 
     @Id
@@ -40,11 +42,11 @@ public class RideOfferEntity {
     @OneToMany(mappedBy = "rideOffer")
     private List<RideRequestsEntity> rideRequests;
 
-    //@CreatedDate
+    @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    //@LastModifiedDate
+    @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 }
