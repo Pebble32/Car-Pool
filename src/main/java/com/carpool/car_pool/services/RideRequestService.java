@@ -49,13 +49,12 @@ public class RideRequestService {
             throw new RuntimeException("You can not request a ride on your offer");
         }
 
-
         var rideRequestEntity = RideRequestsEntity.builder()
                 .rideOffer(rideOffer)
                 .requester(rideRequester)
                 .requestStatus(PENDING)
                 .build();
-        
+
         return rideRequestRepository.save(rideRequestEntity).getId();
 
 
