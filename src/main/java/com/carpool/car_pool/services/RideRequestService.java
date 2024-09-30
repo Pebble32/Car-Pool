@@ -1,6 +1,5 @@
 package com.carpool.car_pool.services;
 
-import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
@@ -12,6 +11,7 @@ import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ public class RideRequestService {
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
 
+    @Transactional
     public Long createRideRequest(@Valid RideRequestRequest request, String userEmail) {
         var rideOffer = rideOfferRepository.findById(request.getRideOfferId())
                 // TODO: Better exception handling RideOfferNotFoundException
