@@ -33,6 +33,7 @@ public class RideOfferEntity {
     @Column(nullable = false)
     private LocalDateTime departureTime;
 
+    @Enumerated(EnumType.STRING)
     private RideStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)

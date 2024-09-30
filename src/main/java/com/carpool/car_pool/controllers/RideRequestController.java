@@ -17,7 +17,7 @@ public class RideRequestController {
 
     private final RideRequestService rideRequestService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Long> createRideRequest(
             @RequestBody @Valid RideRequestRequest rideRequestRequest,
             // TODO: This is ugly and bad solution should be changed after implementing security

@@ -4,9 +4,7 @@ import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class RideOfferConverter {
