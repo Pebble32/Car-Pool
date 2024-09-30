@@ -7,6 +7,7 @@ import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
+import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,16 @@ public class RideRequestService {
                 // TODO: Better exception handling UserNotFoundException
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
-        if (rideOffer.getAvailableSeats() <= 0) throw new RuntimeException("Ride Offer Not Available");
+        if (rideOffer.getAvailableSeats() <= 0) {
+            rideOffer.setStatus(RideStatus.UNAVAILABLE);
+            rideOfferRepository.save(rideOffer);
+            throw new RuntimeException("Ride Offer Not Available");
+        }
+
+        if (rideOffer.getCreator().getEmail().equals(userEmail)) {
+            throw new RuntimeException("You can not request a ride on your offer");
+        }
+
 
         var rideRequestEntity = RideRequestsEntity.builder()
                 .rideOffer(rideOffer)
@@ -53,7 +63,7 @@ public class RideRequestService {
 
     }
 
-    public List<RideRequestResponse> getRideOffers(String userEmail, Long rideOfferId) {
+    public List<RideRequestResponse> getRideRequestsForRideOffer(String userEmail, Long rideOfferId) {
         var rideOffer = rideOfferRepository.findById(rideOfferId)
                 // TODO: Global exception handler RideOfferNotFoundException
                 .orElseThrow(() -> new RuntimeException("Ride Offer Not Found"));

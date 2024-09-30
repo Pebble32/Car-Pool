@@ -35,11 +35,11 @@ public class RideRequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(rideRequestId);
     }
 
-    @GetMapping("/get-offers")
+    @GetMapping("/requests")
     public ResponseEntity<List<RideRequestResponse>> getRideOffers(
             @RequestHeader("X-User-Email") String userEmail,
             @RequestHeader("X-Request-ID") Long rideOfferId
     ) {
-        return ResponseEntity.ok(rideRequestService.getRideOffers(userEmail, rideOfferId));
+        return ResponseEntity.ok(rideRequestService.getRideRequestsForRideOffer(userEmail, rideOfferId));
     }
 }
