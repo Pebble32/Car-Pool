@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.carpool.car_pool.repositories.entities.RequestStatus.PENDING;
 
@@ -24,6 +25,7 @@ public class RideRequestService {
     private final RideOfferRepository rideOfferRepository;
     private final UserRepository userRepository;
     private final RideRequestRepository rideRequestRepository;
+    private final RideRequestConverter rideRequestConverter;
 
     public Long createRideRequest(@Valid RideRequestRequest request, String userEmail) {
         var rideOffer = rideOfferRepository.findById(request.getRideOfferId())
@@ -65,6 +67,9 @@ public class RideRequestService {
             throw new RuntimeException("Ride Offer Not Found");
         }
 
-        List<RideRequestResponse>
+        return rideRequestRepository.findByRideOfferId(rideOfferId)
+                .stream()
+                .map(rideRequestConverter::entityToDTO)
+                .collect(Collectors.toList());
     }
 }
