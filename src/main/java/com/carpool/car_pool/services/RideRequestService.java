@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.carpool.car_pool.repositories.entities.RequestStatus.PENDING;
+import static com.carpool.car_pool.repositories.entities.RideStatus.UNAVAILABLE;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class RideRequestService {
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         if (rideOffer.getAvailableSeats() <= 0) {
-            rideOffer.setStatus(RideStatus.UNAVAILABLE);
+            rideOffer.setStatus(UNAVAILABLE);
             rideOfferRepository.save(rideOffer);
             throw new RuntimeException("Ride Offer Not Available");
         }
@@ -54,11 +55,7 @@ public class RideRequestService {
                 .requester(rideRequester)
                 .requestStatus(PENDING)
                 .build();
-
-        rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() - 1);
-        rideOfferRepository.save(rideOffer);
-
-
+        
         return rideRequestRepository.save(rideRequestEntity).getId();
 
 
