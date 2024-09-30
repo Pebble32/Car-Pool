@@ -10,6 +10,7 @@ import com.carpool.car_pool.services.converters.RideOfferConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,7 @@ public class RideOfferService {
 
     // TODO: If security is implemented change to ApplicationAuditAware
     //  with UserPrincipal using Jwt tokens to keep track of who is logged in and sending requests
+    @Transactional
     public Long createRideOffer(
             @Valid RideOfferRequest request,
             String userEmail) {
