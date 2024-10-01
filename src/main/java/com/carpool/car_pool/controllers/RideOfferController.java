@@ -19,7 +19,7 @@ public class RideOfferController {
 
     private final RideOfferService rideOfferService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/all")
     public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
         return ResponseEntity.ok(rideOfferService.findAllRideOffers());
     }

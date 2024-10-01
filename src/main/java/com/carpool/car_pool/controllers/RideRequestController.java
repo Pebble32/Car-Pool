@@ -1,13 +1,21 @@
 package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.services.RideRequestService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("ride-requests")
@@ -25,5 +33,13 @@ public class RideRequestController {
     ) {
         Long rideRequestId = rideRequestService.createRideRequest(rideRequestRequest, userEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(rideRequestId);
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<List<RideRequestResponse>> getRideOffers(
+            @RequestHeader("X-User-Email") String userEmail,
+            @RequestHeader("X-Request-ID") Long rideOfferId
+    ) {
+        return ResponseEntity.ok(rideRequestService.getRideRequestsForRideOffer(userEmail, rideOfferId));
     }
 }
