@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("offers")
+@RequestMapping("/offers")
 @RequiredArgsConstructor
 @Tag(name = "RideOffer")
 public class RideOfferController {
 
     private final RideOfferService rideOfferService;
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
         return ResponseEntity.ok(rideOfferService.findAllRideOffers());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Long> createRideOffer(
             @RequestBody @Valid RideOfferRequest rideOfferRequest,
             // TODO: This is ugly and bad solution should be changed after implementing security
