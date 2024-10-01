@@ -2,6 +2,7 @@ package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.services.RideOfferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,4 +34,11 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, userEmail));
     }
 
+    @GetMapping("/details")
+    public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
+            @RequestBody @Valid Long ID
+            )
+        {
+        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
+    }
 }

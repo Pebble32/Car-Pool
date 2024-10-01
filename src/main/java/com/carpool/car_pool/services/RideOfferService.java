@@ -50,4 +50,8 @@ public class RideOfferService {
         return rideOfferRepository.save(rideOffer).getId();
 
     }
+
+    public RideOfferResponse viewRideOfferDetail(Long id) {
+
+    }
 }
