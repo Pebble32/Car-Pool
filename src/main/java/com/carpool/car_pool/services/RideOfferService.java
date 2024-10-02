@@ -1,5 +1,6 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
@@ -54,5 +55,40 @@ public class RideOfferService {
     public RideOfferResponse viewRideOfferDetail(Long id) {
         return rideOfferConverter.entityToDTO(rideOfferRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Ride offer with this id does not exist")));
+    }
+
+    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, String email) {
+        RideOfferEntity ride = rideOfferRepository.findById( editRideofferRequest.getRideId())
+                .orElseThrow(()-> new RuntimeException("Ride offer does not exist"));
+
+
+        if (!ride.getCreator().getEmail().equals(email)){
+            throw new RuntimeException("Email is not the same");
+        }
+        if (!editRideofferRequest.getStartLocation().equals(ride.getStartLocation())){
+            ride.setStartLocation(editRideofferRequest.getStartLocation());
+        }
+        if (!editRideofferRequest.getEndLocation().equals(ride.getEndLocation())){
+            ride.setEndLocation(editRideofferRequest.getEndLocation());
+        }
+
+        if (!editRideofferRequest.getDepartureTime().equals(ride.getDepartureTime())){
+            ride.setDepartureTime(editRideofferRequest.getDepartureTime());
+        }
+
+        if (!editRideofferRequest.getAvailableSeats().equals(ride.getAvailableSeats())){
+            ride.setAvailableSeats(editRideofferRequest.getAvailableSeats());
+        }
+
+        if (!editRideofferRequest.getRideStatus().equals(ride.getStatus().toString())){
+
+            ride.setStatus(RideStatus.valueOf(editRideofferRequest.getRideStatus()));
+        }
+
+        RideOfferEntity updatedRide = rideOfferRepository.save(ride);
+
+        return rideOfferConverter.entityToDTO(updatedRide);
+
+
     }
 }
