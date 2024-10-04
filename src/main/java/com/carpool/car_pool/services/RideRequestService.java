@@ -90,7 +90,10 @@ public class RideRequestService {
                 //TODO: Global exception handler UserNotOwnerException
                 .orElseThrow(() -> new RuntimeException("User not owner of the ride offer"));
 
+        List<RideRequestsEntity> rideRequests = rideOffer.getRideRequests();
+
         
+
 
         return null;
     }
