@@ -50,4 +50,9 @@ public class RideOfferService {
         return rideOfferRepository.save(rideOffer).getId();
 
     }
+
+    public RideOfferResponse viewRideOfferDetail(Long id) {
+        return rideOfferConverter.entityToDTO(rideOfferRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Ride offer with this id does not exist")));
+    }
 }

@@ -33,4 +33,11 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, userEmail));
     }
 
+    @GetMapping("/details")
+    public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
+            @RequestParam @Valid Long ID
+            )
+        {
+        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
+    }
 }
