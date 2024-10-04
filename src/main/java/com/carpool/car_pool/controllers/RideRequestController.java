@@ -1,5 +1,8 @@
 package com.carpool.car_pool.controllers;
 
+import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
+import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
+import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.services.RideRequestService;
@@ -10,12 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("ride-requests")
@@ -32,7 +38,7 @@ public class RideRequestController {
             @RequestHeader("X-User-Email") String userEmail
     ) {
         Long rideRequestId = rideRequestService.createRideRequest(rideRequestRequest, userEmail);
-        return ResponseEntity.status(HttpStatus.CREATED).body(rideRequestId);
+        return ResponseEntity.status(CREATED).body(rideRequestId);
     }
 
     @GetMapping("/requests")
@@ -41,5 +47,14 @@ public class RideRequestController {
             @RequestHeader("X-Request-ID") Long rideOfferId
     ) {
         return ResponseEntity.ok(rideRequestService.getRideRequestsForRideOffer(userEmail, rideOfferId));
+    }
+
+    @PutMapping("/answer")
+    public ResponseEntity<EditRideOfferRequest> answerRideOffer(
+            @RequestBody @Valid EditRideOfferRequest rideOfferRequest,
+            @RequestHeader("X-User-Email") String userEmail
+    ) {
+        var rideOfferResponse = rideRequestService.answerRideOffer(rideOfferRequest, userEmail);
+        return ResponseEntity.status(CREATED).body(rideOfferResponse);
     }
 }

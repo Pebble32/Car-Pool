@@ -1,5 +1,6 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
@@ -78,5 +79,17 @@ public class RideRequestService {
                 .stream()
                 .map(rideRequestConverter::entityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public EditRideOfferRequest answerRideOffer(@Valid EditRideOfferRequest rideOfferRequest, String userEmail) {
+        var user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        var rideOffer = rideOfferRepository.findByCreator(user)
+                .orElseThrow(() -> new RuntimeException("User not owner of the ride offer"));
+
+        
+
+        return null;
     }
 }
