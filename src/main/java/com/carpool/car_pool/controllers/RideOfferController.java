@@ -1,5 +1,6 @@
 package com.carpool.car_pool.controllers;
 
+import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.services.RideOfferService;
@@ -36,8 +37,16 @@ public class RideOfferController {
     @GetMapping("/details")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
             @RequestParam @Valid Long ID
-            )
-        {
+            ) {
         return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
     }
+
+    @PutMapping("/details")
+    public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
+            @RequestBody EditRideOfferRequest editRideofferRequest,
+            @RequestHeader ("X-User-Email") String email
+    ){
+        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, email));
+    }
+
 }
