@@ -83,9 +83,11 @@ public class RideRequestService {
 
     public EditRideOfferRequest answerRideOffer(@Valid EditRideOfferRequest rideOfferRequest, String userEmail) {
         var user = userRepository.findByEmail(userEmail)
+                //TODO: Global excaption handler UserNotFoundException
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         var rideOffer = rideOfferRepository.findByCreator(user)
+                //TODO: Global exception handler UserNotOwnerException
                 .orElseThrow(() -> new RuntimeException("User not owner of the ride offer"));
 
         
