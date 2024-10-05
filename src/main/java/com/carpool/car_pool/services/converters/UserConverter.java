@@ -4,7 +4,6 @@ import com.carpool.car_pool.controllers.dtos.RegisterRequest;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class UserConverter {

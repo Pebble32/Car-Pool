@@ -4,8 +4,12 @@ spring:
   servlet:
     multipart:
       max-file-size: 200MB
+  session:
+    timeout: 30m
+
 springdoc:
   default-produces-media-type: application/json
+
 server:
   servlet:
     context-path: /api/v1/
