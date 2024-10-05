@@ -51,4 +51,12 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, currentUser));
     }
 
+    @DeleteMapping("/details/{id}")
+    public ResponseEntity<Void> deleteRideOffer(
+            @PathVariable Long id
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        rideOfferService.deleteRideOffer(id, currentUser);
+        return ResponseEntity.noContent().build();
+    }
 }
