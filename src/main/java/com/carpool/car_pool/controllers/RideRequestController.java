@@ -1,10 +1,6 @@
 package com.carpool.car_pool.controllers;
 
-import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
-import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
-import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
-import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
-import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
+import com.carpool.car_pool.controllers.dtos.*;
 import com.carpool.car_pool.services.RideRequestService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -50,11 +46,11 @@ public class RideRequestController {
     }
 
     @PutMapping("/answer")
-    public ResponseEntity<EditRideOfferRequest> answerRideOffer(
-            @RequestBody @Valid EditRideOfferRequest rideOfferRequest,
+    public ResponseEntity<RideRequestResponse> answerRideOffer(
+            @RequestBody @Valid AnswerRideRequestRequest request,
             @RequestHeader("X-User-Email") String userEmail
     ) {
-        var rideOfferResponse = rideRequestService.answerRideOffer(rideOfferRequest, userEmail);
-        return ResponseEntity.status(CREATED).body(rideOfferResponse);
+        var rideRequestResponse = rideRequestService.answerRideOffer(request, userEmail);
+        return ResponseEntity.status(CREATED).body(rideRequestResponse);
     }
 }

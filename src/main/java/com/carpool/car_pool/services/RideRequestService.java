@@ -1,5 +1,6 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
@@ -81,7 +82,10 @@ public class RideRequestService {
                 .collect(Collectors.toList());
     }
 
-    public EditRideOfferRequest answerRideOffer(@Valid EditRideOfferRequest rideOfferRequest, String userEmail) {
+    public RideRequestResponse answerRideOffer(@Valid AnswerRideRequestRequest request, String userEmail) {
+        var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
+                .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
+
         var user = userRepository.findByEmail(userEmail)
                 //TODO: Global excaption handler UserNotFoundException
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
@@ -90,6 +94,19 @@ public class RideRequestService {
                 //TODO: Global exception handler UserNotOwnerException
                 .orElseThrow(() -> new RuntimeException("User not owner of the ride offer"));
 
+        if (!rideOffer.getCreator().getId().equals(user.getId())) {
+            //TODO: Global exception handler UnauthorizedAccessException
+            throw new RuntimeException("You are not authorized to answer this ride request.");
+        }
+
+
+        if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.ACCEPTED) {
+            if (rideOffer.getAvailableSeats() <= 0) {
+                throw new RuntimeException("No available seats to accept this ride request");
+            }
+
+            
+        }
         List<RideRequestsEntity> rideRequests = rideOffer.getRideRequests();
 
         
