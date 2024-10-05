@@ -88,4 +88,15 @@ public class RideOfferService {
 
 
     }
+
+    public void deleteRideOffer(long id, UserEntity user) {
+        RideOfferEntity rideOffer = rideOfferRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Ride offer does not exist"));
+
+        if (!rideOffer.getCreator().equals(user)){
+            throw new RuntimeException("Only owner can delete this ride offer");
+        }
+
+        rideOfferRepository.delete(rideOffer);
+    }
 }
