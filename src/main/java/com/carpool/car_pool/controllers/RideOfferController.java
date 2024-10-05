@@ -36,19 +36,20 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, currentUser));
     }
 
-    @GetMapping("/details")
+    @GetMapping("/details/{id}")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
-            @RequestParam @Valid Long ID
-            ) {
-        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(id));
     }
 
-    @PutMapping("/details")
+    @PutMapping("/details/{id}")
     public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
-            @RequestBody EditRideOfferRequest editRideofferRequest
+            @RequestBody EditRideOfferRequest editRideOfferRequest,
+            @PathVariable String id // TODO: does this make sense? should I check if id == editRideOfferRequest.id?
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
-        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, currentUser));
+        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideOfferRequest, currentUser));
     }
 
     @DeleteMapping("/details/{id}")
