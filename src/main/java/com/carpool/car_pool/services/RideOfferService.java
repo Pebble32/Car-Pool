@@ -6,10 +6,7 @@ import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.UserRepository;
-import com.carpool.car_pool.repositories.entities.RequestStatus;
-import com.carpool.car_pool.repositories.entities.RideOfferEntity;
-import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
-import com.carpool.car_pool.repositories.entities.RideStatus;
+import com.carpool.car_pool.repositories.entities.*;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,18 +36,9 @@ public class RideOfferService {
     // TODO: If security is implemented change to ApplicationAuditAware
     //  with UserPrincipal using Jwt tokens to keep track of who is logged in and sending requests
     @Transactional
-    public Long createRideOffer(
-            @Valid RideOfferRequest request,
-            String userEmail) {
-        var user = userRepository.findByEmail(userEmail)
-                //  TODO: Better exception handling UserNotFoundException
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
-
+    public Long createRideOffer(@Valid RideOfferRequest request, UserEntity user) {
         RideOfferEntity rideOffer = rideOfferConverter.dtoToEntity(request);
         rideOffer.setCreator(user);
-
-        // TODO: Delete this line after AuditAware is implemented
-        rideOffer.setCreatedDate(LocalDateTime.now());
 
         return rideOfferRepository.save(rideOffer).getId();
 
@@ -61,12 +49,12 @@ public class RideOfferService {
                 .orElseThrow(()-> new RuntimeException("Ride offer with this id does not exist")));
     }
 
-    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, String email) {
-        RideOfferEntity ride = rideOfferRepository.findById( editRideofferRequest.getRideId())
+    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, UserEntity user) {
+        RideOfferEntity ride = rideOfferRepository.findById(editRideofferRequest.getRideId())
                 .orElseThrow(()-> new RuntimeException("Ride offer does not exist"));
 
-        if (!ride.getCreator().getEmail().equals(email)){
-            throw new RuntimeException("Email is not the same");
+        if (!ride.getCreator().equals(user)){
+            throw new RuntimeException("Only owner can edit ride offer");
         }
 
         if (!editRideofferRequest.getRideStatus().equals(ride.getStatus().toString())){
