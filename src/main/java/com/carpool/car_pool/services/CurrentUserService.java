@@ -14,11 +14,11 @@ public class CurrentUserService {
     private final HttpSession httpSession;
 
     public UserEntity getCurrentUser() {
-        Long userId = (Long) httpSession.getAttribute("userEmail");
-        if (userId == null) {
+        String userEmail = (String) httpSession.getAttribute("userEmail");
+        if (userEmail == null) {
             throw new RuntimeException("User not authenticated");
         }
-        return userRepository.findById(userId)
+        return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

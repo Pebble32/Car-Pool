@@ -4,6 +4,7 @@ import com.carpool.car_pool.controllers.dtos.AuthenticationRequest;
 import com.carpool.car_pool.controllers.dtos.RegisterRequest;
 import com.carpool.car_pool.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class AuthController {
     public ResponseEntity<?> authenticate(
             @RequestBody @Valid AuthenticationRequest authenticationRequest,
             HttpSession session
+            // TODO: Add HttpServletRequest so when page is reloaded we don't have to log in again
     ) {
         authService.authenticate(authenticationRequest);
         session.setAttribute("userEmail", authenticationRequest.getEmail());
