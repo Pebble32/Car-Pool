@@ -4,7 +4,6 @@ import com.carpool.car_pool.controllers.dtos.AuthenticationRequest;
 import com.carpool.car_pool.controllers.dtos.RegisterRequest;
 import com.carpool.car_pool.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
