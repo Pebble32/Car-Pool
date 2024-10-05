@@ -1,14 +1,13 @@
 package com.carpool.car_pool.services;
 
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
-import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.UserRepository;
+import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
-import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -101,17 +100,36 @@ public class RideRequestService {
 
 
         if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.ACCEPTED) {
+
+            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)){
+                throw new RuntimeException("Ride Request already accepted");
+            }
+
             if (rideOffer.getAvailableSeats() <= 0) {
                 throw new RuntimeException("No available seats to accept this ride request");
             }
 
-            
+            rideRequest.setRequestStatus(RequestStatus.ACCEPTED);
+
+            rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() - 1);
+
+            if(rideOffer.getAvailableSeats() == 0) {
+                rideOffer.setStatus(UNAVAILABLE);
+            }
+
+        } else if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.REJECTED) {
+            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
+                rideRequest.setRequestStatus(RequestStatus.REJECTED);
+                rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
+
+            } else {
+                rideRequest.setRequestStatus(RequestStatus.REJECTED);
+            }
         }
-        List<RideRequestsEntity> rideRequests = rideOffer.getRideRequests();
 
-        
+        rideRequestRepository.save(rideRequest);
+        rideOfferRepository.save(rideOffer);
 
-
-        return null;
+        return rideRequestConverter.entityToDTO(rideRequest);
     }
 }
