@@ -5,7 +5,6 @@ import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
-import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
@@ -29,7 +28,6 @@ public class RideRequestService {
 
 
     private final RideOfferRepository rideOfferRepository;
-    private final UserRepository userRepository;
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
 
