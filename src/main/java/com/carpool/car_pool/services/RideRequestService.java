@@ -94,9 +94,7 @@ public class RideRequestService {
                 //TODO: Global excaption handler UserNotFoundException
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
-        var rideOffer = rideOfferRepository.findByCreator(user)
-                //TODO: Global exception handler UserNotOwnerException
-                .orElseThrow(() -> new RuntimeException("User not owner of the ride offer"));
+        var rideOffer = rideRequest.getRideOffer();
 
         if (!rideOffer.getCreator().getId().equals(user.getId())) {
             //TODO: Global exception handler UnauthorizedAccessException
