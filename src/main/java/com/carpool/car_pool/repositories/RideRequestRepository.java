@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface RideRequestRepository extends JpaRepository<RideRequestsEntity, Long> {
     Optional<RideRequestsEntity> findByRideOfferId(Long rideOfferId);
+    boolean existsByRideOfferIdAndRequesterId(Long rideOfferId, Long requesterId);
 }
