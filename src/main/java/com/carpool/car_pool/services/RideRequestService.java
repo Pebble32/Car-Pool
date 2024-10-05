@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.carpool.car_pool.repositories.entities.RequestStatus.CANCELED;
 import static com.carpool.car_pool.repositories.entities.RequestStatus.PENDING;
 import static com.carpool.car_pool.repositories.entities.RideStatus.UNAVAILABLE;
 
@@ -84,6 +85,10 @@ public class RideRequestService {
     public RideRequestResponse answerRideOffer(@Valid AnswerRideRequestRequest request, String userEmail) {
         var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
+
+        if (rideRequest.getRequestStatus().equals(CANCELED)) {
+            throw new RuntimeException("Ride Request is Canceled");
+        }
 
         var user = userRepository.findByEmail(userEmail)
                 //TODO: Global excaption handler UserNotFoundException
