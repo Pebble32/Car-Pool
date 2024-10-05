@@ -4,9 +4,9 @@ import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
+import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.UserRepository;
-import com.carpool.car_pool.repositories.entities.RideOfferEntity;
-import com.carpool.car_pool.repositories.entities.RideStatus;
+import com.carpool.car_pool.repositories.entities.*;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ public class RideOfferService {
     private final RideOfferRepository rideOfferRepository;
     private final RideOfferConverter rideOfferConverter;
     private final UserRepository userRepository;
+    private final RideRequestRepository rideRequestRepository;
 
     public List<RideOfferResponse> findAllRideOffers() {
         List<RideOfferEntity> rideOfferEntities = rideOfferRepository.findAll();
@@ -35,18 +36,9 @@ public class RideOfferService {
     // TODO: If security is implemented change to ApplicationAuditAware
     //  with UserPrincipal using Jwt tokens to keep track of who is logged in and sending requests
     @Transactional
-    public Long createRideOffer(
-            @Valid RideOfferRequest request,
-            String userEmail) {
-        var user = userRepository.findByEmail(userEmail)
-                //  TODO: Better exception handling UserNotFoundException
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
-
+    public Long createRideOffer(@Valid RideOfferRequest request, UserEntity user) {
         RideOfferEntity rideOffer = rideOfferConverter.dtoToEntity(request);
         rideOffer.setCreator(user);
-
-        // TODO: Delete this line after AuditAware is implemented
-        rideOffer.setCreatedDate(LocalDateTime.now());
 
         return rideOfferRepository.save(rideOffer).getId();
 
@@ -57,14 +49,26 @@ public class RideOfferService {
                 .orElseThrow(()-> new RuntimeException("Ride offer with this id does not exist")));
     }
 
-    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, String email) {
-        RideOfferEntity ride = rideOfferRepository.findById( editRideofferRequest.getRideId())
+    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, UserEntity user) {
+        RideOfferEntity ride = rideOfferRepository.findById(editRideofferRequest.getRideId())
                 .orElseThrow(()-> new RuntimeException("Ride offer does not exist"));
 
-
-        if (!ride.getCreator().getEmail().equals(email)){
-            throw new RuntimeException("Email is not the same");
+        if (!ride.getCreator().equals(user)){
+            throw new RuntimeException("Only owner can edit ride offer");
         }
+
+        if (!editRideofferRequest.getRideStatus().equals(ride.getStatus().toString())){
+            if (editRideofferRequest.getRideStatus().equals(RideStatus.CANCELLED.toString())) {
+                ride.setStatus(RideStatus.CANCELLED);
+                List<RideRequestsEntity> requests = ride.getRideRequests();
+                for (RideRequestsEntity request : requests) {
+                    request.setRequestStatus(RequestStatus.REJECTED);
+                    rideRequestRepository.save(request);
+                }
+            }
+            ride.setStatus(RideStatus.valueOf(editRideofferRequest.getRideStatus()));
+        }
+
         if (!editRideofferRequest.getStartLocation().equals(ride.getStartLocation())){
             ride.setStartLocation(editRideofferRequest.getStartLocation());
         }
@@ -80,10 +84,6 @@ public class RideOfferService {
             ride.setAvailableSeats(editRideofferRequest.getAvailableSeats());
         }
 
-        if (!editRideofferRequest.getRideStatus().equals(ride.getStatus().toString())){
-
-            ride.setStatus(RideStatus.valueOf(editRideofferRequest.getRideStatus()));
-        }
 
         RideOfferEntity updatedRide = rideOfferRepository.save(ride);
 

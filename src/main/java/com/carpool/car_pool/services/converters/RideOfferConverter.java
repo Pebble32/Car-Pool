@@ -28,8 +28,6 @@ public class RideOfferConverter {
                 .availableSeats(rideOfferEntity.getAvailableSeats())
                 .status(rideOfferEntity.getStatus())
                 .creatorEmail(rideOfferEntity.getCreator().getEmail())
-                .createdAt(rideOfferEntity.getCreatedDate())
-                .lastModified(rideOfferEntity.getLastModifiedDate())
                 .build();
     }
 }

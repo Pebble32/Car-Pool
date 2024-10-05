@@ -3,6 +3,8 @@ package com.carpool.car_pool.controllers;
 import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.RideOfferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.List;
 public class RideOfferController {
 
     private final RideOfferService rideOfferService;
+    private final CurrentUserService currentUserService;
 
     @GetMapping("/all")
     public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
@@ -27,11 +30,10 @@ public class RideOfferController {
 
     @PostMapping("/create")
     public ResponseEntity<Long> createRideOffer(
-            @RequestBody @Valid RideOfferRequest rideOfferRequest,
-            // TODO: This is ugly and bad solution should be changed after implementing security
-            @RequestHeader("X-User-Email") String userEmail
+            @RequestBody @Valid RideOfferRequest rideOfferRequest
     ) {
-        return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, userEmail));
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, currentUser));
     }
 
     @GetMapping("/details")
@@ -43,10 +45,10 @@ public class RideOfferController {
 
     @PutMapping("/details")
     public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
-            @RequestBody EditRideOfferRequest editRideofferRequest,
-            @RequestHeader ("X-User-Email") String email
+            @RequestBody EditRideOfferRequest editRideofferRequest
     ){
-        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, email));
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, currentUser));
     }
 
 }
