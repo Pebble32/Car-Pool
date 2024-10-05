@@ -50,7 +50,7 @@ public class RideRequestController {
             @RequestBody @Valid AnswerRideRequestRequest request,
             @RequestHeader("X-User-Email") String userEmail
     ) {
-        var rideRequestResponse = rideRequestService.answerRideOffer(request, userEmail);
+        var rideRequestResponse = rideRequestService.answerRideRequest(request, userEmail);
         return ResponseEntity.status(CREATED).body(rideRequestResponse);
     }
 }

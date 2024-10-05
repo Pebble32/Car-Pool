@@ -82,7 +82,7 @@ public class RideRequestService {
                 .collect(Collectors.toList());
     }
 
-    public RideRequestResponse answerRideOffer(@Valid AnswerRideRequestRequest request, String userEmail) {
+    public RideRequestResponse answerRideRequest(@Valid AnswerRideRequestRequest request, String userEmail) {
         var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
 
