@@ -8,6 +8,7 @@ import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
+import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -96,6 +97,10 @@ public class RideRequestService {
 
         var rideOffer = rideRequest.getRideOffer();
 
+        if (!rideOffer.getStatus().equals(RideStatus.AVAILABLE)) {
+            throw new RuntimeException("Ride Offer is not Available");
+        }
+
         if (!rideOffer.getCreator().getId().equals(user.getId())) {
             //TODO: Global exception handler UnauthorizedAccessException
             throw new RuntimeException("You are not authorized to answer this ride request.");
@@ -121,13 +126,7 @@ public class RideRequestService {
             }
 
         } else if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.REJECTED) {
-            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
-                rideRequest.setRequestStatus(RequestStatus.REJECTED);
-                rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
-
-            } else {
-                rideRequest.setRequestStatus(RequestStatus.REJECTED);
-            }
+            rideRequest.setRequestStatus(RequestStatus.REJECTED);
         }
 
         rideRequestRepository.save(rideRequest);
