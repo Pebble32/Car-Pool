@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.carpool.car_pool.repositories.entities.RequestStatus.CANCELED;
@@ -125,5 +126,13 @@ public class RideRequestService {
         rideOfferRepository.save(rideOffer);
 
         return rideRequestConverter.entityToDTO(rideRequest);
+    }
+
+    public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
+        Optional<RideRequestsEntity> rideRequests = rideRequestRepository.findByRequester(currentUser);
+
+        return rideRequests.stream()
+                .map(rideRequestConverter::entityToDTO)
+                .collect(Collectors.toList());
     }
 }
