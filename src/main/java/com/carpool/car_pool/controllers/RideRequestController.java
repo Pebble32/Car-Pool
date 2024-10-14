@@ -50,11 +50,13 @@ public class RideRequestController {
         var rideRequestResponse = rideRequestService.answerRideRequest(request, currentUser);
         return ResponseEntity.status(CREATED).body(rideRequestResponse);
     }
-
+}
     /**
      * Returns all the ride requests that have been made by the current user
      * @return List of ride requests
      */
+
+    /*
     @GetMapping("/user-requests")
     public ResponseEntity<List<RideRequestResponse>> viewUsersRideRequests(
     ){
@@ -62,3 +64,4 @@ public class RideRequestController {
         return ResponseEntity.ok(rideRequestService.getRideRequestsForUser(currentUser));
     }
 }
+*/

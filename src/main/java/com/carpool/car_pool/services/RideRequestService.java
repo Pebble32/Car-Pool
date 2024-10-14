@@ -100,7 +100,7 @@ public class RideRequestService {
         }
 
         if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.ACCEPTED) {
-            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)){
+            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
                 throw new RuntimeException("Ride Request already accepted");
             }
 
@@ -111,7 +111,7 @@ public class RideRequestService {
             rideRequest.setRequestStatus(RequestStatus.ACCEPTED);
             rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() - 1);
 
-            if(rideOffer.getAvailableSeats() == 0) {
+            if (rideOffer.getAvailableSeats() == 0) {
                 rideOffer.setStatus(UNAVAILABLE);
             }
 
@@ -126,7 +126,10 @@ public class RideRequestService {
 
         return rideRequestConverter.entityToDTO(rideRequest);
     }
+}
 
+
+    /*
     public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
         return rideRequestRepository.findByRequester(currentUser)
                         .stream()
@@ -134,3 +137,4 @@ public class RideRequestService {
                         .collect(Collectors.toList());
     }
 }
+*/
