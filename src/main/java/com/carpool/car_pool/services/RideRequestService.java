@@ -128,10 +128,9 @@ public class RideRequestService {
     }
 
     public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
-        List<RideRequestsEntity> rideRequests = rideRequestRepository.findByRequester(currentUser);
-
-        return rideRequests.stream()
-                .map(rideRequestConverter::entityToDTO)
-                .collect(Collectors.toList());
+        return rideRequestRepository.findByRequester(currentUser)
+                        .stream()
+                        .map(rideRequestConverter::entityToDTO)
+                        .collect(Collectors.toList());
     }
 }
