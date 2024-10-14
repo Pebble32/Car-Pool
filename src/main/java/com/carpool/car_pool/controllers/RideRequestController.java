@@ -56,7 +56,7 @@ public class RideRequestController {
      * @return List of ride requests
      */
     @GetMapping("/user-requests")
-    public ResponseEntity<List<RideRequestResponse>> getUsersRideRequests(
+    public ResponseEntity<List<RideRequestResponse>> viewUsersRideRequests(
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok(rideRequestService.getRideRequestsForUser(currentUser));
