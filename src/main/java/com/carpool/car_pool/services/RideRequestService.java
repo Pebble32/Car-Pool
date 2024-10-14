@@ -126,4 +126,11 @@ public class RideRequestService {
 
         return rideRequestConverter.entityToDTO(rideRequest);
     }
+
+    public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
+        return rideRequestRepository.findByRequester(currentUser)
+                        .stream()
+                        .map(rideRequestConverter::entityToDTO)
+                        .collect(Collectors.toList());
+    }
 }
