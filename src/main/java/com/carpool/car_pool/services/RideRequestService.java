@@ -9,9 +9,11 @@ import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.repositories.specifications.RideRequestSpecifications;
 import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,7 +102,7 @@ public class RideRequestService {
         }
 
         if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.ACCEPTED) {
-            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)){
+            if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
                 throw new RuntimeException("Ride Request already accepted");
             }
 
@@ -111,7 +113,7 @@ public class RideRequestService {
             rideRequest.setRequestStatus(RequestStatus.ACCEPTED);
             rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() - 1);
 
-            if(rideOffer.getAvailableSeats() == 0) {
+            if (rideOffer.getAvailableSeats() == 0) {
                 rideOffer.setStatus(UNAVAILABLE);
             }
 
@@ -128,9 +130,11 @@ public class RideRequestService {
     }
 
     public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
-        return rideRequestRepository.findByRequester(currentUser)
-                        .stream()
-                        .map(rideRequestConverter::entityToDTO)
-                        .collect(Collectors.toList());
+        Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRequester(currentUser));
+
+        return rideRequestRepository.findAll(spec)
+                .stream()
+                .map(rideRequestConverter::entityToDTO)
+                .collect(Collectors.toList());
     }
 }
