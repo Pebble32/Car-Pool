@@ -12,6 +12,5 @@ import java.util.Optional;
 @Repository
 public interface RideRequestRepository extends JpaRepository<RideRequestsEntity, Long>, JpaSpecificationExecutor<RideRequestsEntity> {
     Optional<RideRequestsEntity> findByRideOfferId(Long rideOfferId);
-    Optional<List<RideRequestsEntity>> findByRequester(UserEntity requester);
     boolean existsByRideOfferIdAndRequesterId(Long rideOfferId, Long requesterId);
 }
