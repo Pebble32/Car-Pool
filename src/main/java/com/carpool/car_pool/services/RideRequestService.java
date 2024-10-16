@@ -16,12 +16,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,30 +151,20 @@ public class RideRequestService {
             throw new RuntimeException("Unauthorized Access");
         }
 
-        Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRideOfferId(rideOfferId));
 
-        Page<RideRequestsEntity> rideRequestsPage = rideRequestRepository.findAll(spec, pageable);
-
-        List<RideRequestResponse> rideRequests = rideRequestsPage.stream()
-                .map(rideRequestConverter::entityToDTO)
-                .collect(Collectors.toList());
-
-        return new PageResponse<>(
-                rideRequests,
-                rideRequestsPage.getNumber(),
-                rideRequestsPage.getSize(),
-                rideRequestsPage.getTotalElements(),
-                rideRequestsPage.getTotalPages(),
-                rideRequestsPage.isFirst(),
-                rideRequestsPage.isLast()
-        );
+        return getRideRequestResponsePageResponse(pageable, spec);
     }
 
     public PageResponse<RideRequestResponse> getRideRequestsForUserPaginated(UserEntity currentUser, int page, int size) {
-        Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRequester(currentUser));
 
+        return getRideRequestResponsePageResponse(pageable, spec);
+    }
+
+    private PageResponse<RideRequestResponse> getRideRequestResponsePageResponse(Pageable pageable, Specification<RideRequestsEntity> spec) {
         Page<RideRequestsEntity> rideRequestsPage = rideRequestRepository.findAll(spec, pageable);
 
         List<RideRequestResponse> rideRequests = rideRequestsPage.stream()
