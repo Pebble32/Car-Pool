@@ -10,13 +10,19 @@ import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,8 +95,25 @@ public class RideOfferService {
         RideOfferEntity updatedRide = rideOfferRepository.save(ride);
 
         return rideOfferConverter.entityToDTO(updatedRide);
+    }
 
+    public PageResponse<RideOfferResponse> findAllRideOffersPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
+        Page<RideOfferEntity> rideOfferPage = rideOfferRepository.findAll(pageable);
 
+        List<RideOfferResponse> rideOffers = rideOfferPage.stream()
+                .map(rideOfferConverter::entityToDTO)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                rideOffers,
+                rideOfferPage.getNumber(),
+                rideOfferPage.getSize(),
+                rideOfferPage.getTotalElements(),
+                rideOfferPage.getTotalPages(),
+                rideOfferPage.isFirst(),
+                rideOfferPage.isLast()
+        );
     }
 
     @Transactional

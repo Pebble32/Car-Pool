@@ -11,6 +11,7 @@
 	<groupId>com.carpool</groupId>
 	<artifactId>car-pool</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>car-pool-app</name>
 	<description>Car Pool Application for Students</description>
 	<url/>

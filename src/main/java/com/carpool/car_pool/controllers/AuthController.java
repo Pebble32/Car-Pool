@@ -3,13 +3,14 @@ package com.carpool.car_pool.controllers;
 import com.carpool.car_pool.controllers.dtos.AuthenticationRequest;
 import com.carpool.car_pool.controllers.dtos.RegisterRequest;
 import com.carpool.car_pool.services.AuthenticationService;
+import com.carpool.car_pool.services.CurrentUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationService authService;
+    private final CurrentUserService currentUserService;
 
     /**
      * Endpoint to authenticate a user.
@@ -60,4 +62,8 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<?> check(HttpSession session) {
+        return ResponseEntity.ok(currentUserService.getCurrentUser());
+    }
 }
