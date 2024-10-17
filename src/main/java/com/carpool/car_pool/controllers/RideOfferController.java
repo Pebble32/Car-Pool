@@ -43,10 +43,9 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(id));
     }
 
-    @PutMapping("/details/{id}")
+    @PutMapping("/details")
     public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
-            @RequestBody EditRideOfferRequest editRideOfferRequest,
-            @PathVariable String id // TODO: does this make sense? should I check if id == editRideOfferRequest.id?
+            @RequestBody EditRideOfferRequest editRideOfferRequest
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideOfferRequest, currentUser));
@@ -58,6 +57,6 @@ public class RideOfferController {
     ) {
         UserEntity currentUser = currentUserService.getCurrentUser();
         rideOfferService.deleteRideOffer(id, currentUser);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
