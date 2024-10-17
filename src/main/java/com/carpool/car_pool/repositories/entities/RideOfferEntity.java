@@ -40,7 +40,7 @@ public class RideOfferEntity {
     @JoinColumn(name = "creator_id", nullable = false)
     private UserEntity creator;
 
-    @OneToMany(mappedBy = "rideOffer")
+    @OneToMany(mappedBy = "rideOffer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RideRequestsEntity> rideRequests;
 
     @CreatedDate
