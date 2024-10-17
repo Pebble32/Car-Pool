@@ -3,6 +3,7 @@ package com.carpool.car_pool.controllers;
 import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.RideOfferService;
@@ -49,6 +50,22 @@ public class RideOfferController {
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, currentUser));
+    }
+
+    /**
+     * Returns paginated list of all ride offers.
+     *
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @return Paginated list of ride offers.
+     */
+    @GetMapping("/all/paginated")
+    public ResponseEntity<PageResponse<RideOfferResponse>> findAllRideOffersPaginated(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        PageResponse<RideOfferResponse> response = rideOfferService.findAllRideOffersPaginated(page, size);
+        return ResponseEntity.ok(response);
     }
 
 }

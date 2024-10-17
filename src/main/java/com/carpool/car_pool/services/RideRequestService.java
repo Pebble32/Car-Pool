@@ -5,6 +5,7 @@ import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
+import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
@@ -13,6 +14,10 @@ import com.carpool.car_pool.repositories.specifications.RideRequestSpecification
 import com.carpool.car_pool.services.converters.RideRequestConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,4 +142,44 @@ public class RideRequestService {
                 .map(rideRequestConverter::entityToDTO)
                 .collect(Collectors.toList());
     }
+
+    public PageResponse<RideRequestResponse> getRideRequestsForRideOfferPaginated(Long rideOfferId, UserEntity currentUser, int page, int size) {
+        var rideOffer = rideOfferRepository.findById(rideOfferId)
+                .orElseThrow(() -> new RuntimeException("Ride Offer Not Found"));
+
+        if (!rideOffer.getCreator().equals(currentUser)) {
+            throw new RuntimeException("Unauthorized Access");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRideOfferId(rideOfferId));
+
+        return getRideRequestResponsePageResponse(pageable, spec);
+    }
+
+    public PageResponse<RideRequestResponse> getRideRequestsForUserPaginated(UserEntity currentUser, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRequester(currentUser));
+
+        return getRideRequestResponsePageResponse(pageable, spec);
+    }
+
+    private PageResponse<RideRequestResponse> getRideRequestResponsePageResponse(Pageable pageable, Specification<RideRequestsEntity> spec) {
+        Page<RideRequestsEntity> rideRequestsPage = rideRequestRepository.findAll(spec, pageable);
+
+        List<RideRequestResponse> rideRequests = rideRequestsPage.stream()
+                .map(rideRequestConverter::entityToDTO)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                rideRequests,
+                rideRequestsPage.getNumber(),
+                rideRequestsPage.getSize(),
+                rideRequestsPage.getTotalElements(),
+                rideRequestsPage.getTotalPages(),
+                rideRequestsPage.isFirst(),
+                rideRequestsPage.isLast()
+        );
+    }
+
 }
