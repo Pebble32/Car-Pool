@@ -37,9 +37,9 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, currentUser));
     }
 
-    @GetMapping("/details/{id}")
+    @GetMapping("/details")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
-            @PathVariable Long id
+            @RequestParam @Valid Long id
     ) {
         return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(id));
     }
