@@ -5,8 +5,12 @@ import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
+import com.carpool.car_pool.repositories.entities.RequestStatus;
+import com.carpool.car_pool.repositories.entities.RideOfferEntity;
+import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
+import com.carpool.car_pool.repositories.entities.RideStatus;
+import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.repositories.common.PageResponse;
-import com.carpool.car_pool.repositories.entities.*;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +114,19 @@ public class RideOfferService {
                 rideOfferPage.isFirst(),
                 rideOfferPage.isLast()
         );
+    }
+
+    @Transactional
+    public void deleteRideOffer(long id, UserEntity user) {
+        RideOfferEntity rideOffer = rideOfferRepository.findById(id)
+                //TODO Add global exception handling
+                .orElseThrow(()-> new RuntimeException("Ride offer does not exist"));
+
+        if (!rideOffer.getCreator().equals(user)){
+            throw new RuntimeException("Only owner can delete this ride offer");
+        }
+
+        // TODO: When notification is implemented we should notify all requests for the ride offer here
+        rideOfferRepository.delete(rideOffer);
     }
 }

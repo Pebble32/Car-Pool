@@ -37,21 +37,31 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, currentUser));
     }
 
-    @GetMapping("/details")
+    @GetMapping("/details/{id}")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
-            @RequestParam @Valid Long ID
-            ) {
-        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(id));
     }
 
     @PutMapping("/details")
     public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
-            @RequestBody EditRideOfferRequest editRideofferRequest
+            @RequestBody EditRideOfferRequest editRideOfferRequest
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
-        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideofferRequest, currentUser));
+        return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideOfferRequest, currentUser));
     }
 
+  
+    @DeleteMapping("/details/{id}")
+    public ResponseEntity<Void> deleteRideOffer(
+            @PathVariable Long id
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        rideOfferService.deleteRideOffer(id, currentUser);
+        return ResponseEntity.ok().build();
+    }
+  
     /**
      * Returns paginated list of all ride offers.
      *
