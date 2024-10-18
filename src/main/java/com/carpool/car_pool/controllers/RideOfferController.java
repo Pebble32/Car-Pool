@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing ride offers.
+ */
 @RestController
 @RequestMapping("/offers")
 @RequiredArgsConstructor
@@ -24,11 +27,22 @@ public class RideOfferController {
     private final RideOfferService rideOfferService;
     private final CurrentUserService currentUserService;
 
+    /**
+     * Retrieves a list of all available ride offers.
+     *
+     * @return ResponseEntity containing a list of {@link RideOfferResponse}.
+     */
     @GetMapping("/all")
     public ResponseEntity<List<RideOfferResponse>> findAllRideOffers (){
         return ResponseEntity.ok(rideOfferService.findAllRideOffers());
     }
 
+    /**
+     * Creates a new ride offer.
+     *
+     * @param rideOfferRequest The request containing details for the new ride offer.
+     * @return ResponseEntity containing the ID of the created ride offer.
+     */
     @PostMapping("/create")
     public ResponseEntity<Long> createRideOffer(
             @RequestBody @Valid RideOfferRequest rideOfferRequest
@@ -37,6 +51,12 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.createRideOffer(rideOfferRequest, currentUser));
     }
 
+    /**
+     * Retrieves detailed information about a specific ride offer.
+     *
+     * @param ID The unique identifier of the ride offer.
+     * @return ResponseEntity containing the {@link RideOfferResponse} details.
+     */
     @GetMapping("/details")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
             @RequestParam @Valid Long ID
@@ -44,6 +64,12 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
     }
 
+    /**
+     * Edits the details of an existing ride offer.
+     *
+     * @param editRideOfferRequest The request containing updated ride offer details.
+     * @return ResponseEntity containing the updated {@link RideOfferResponse}.
+     */
     @PutMapping("/details")
     public ResponseEntity<RideOfferResponse>  editRideOfferDetails(
             @RequestBody EditRideOfferRequest editRideOfferRequest
@@ -52,7 +78,12 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.editRideOfferDetail(editRideOfferRequest, currentUser));
     }
 
-  
+    /**
+     * Deletes a specific ride offer.
+     *
+     * @param id The unique identifier of the ride offer to be deleted.
+     * @return ResponseEntity with HTTP status.
+     */
     @DeleteMapping("/details/{id}")
     public ResponseEntity<Void> deleteRideOffer(
             @PathVariable Long id
@@ -61,9 +92,9 @@ public class RideOfferController {
         rideOfferService.deleteRideOffer(id, currentUser);
         return ResponseEntity.ok().build();
     }
-  
+
     /**
-     * Returns paginated list of all ride offers.
+     * Returns a paginated list of all ride offers.
      *
      * @param page The page number (zero-based).
      * @param size The size of the page.
@@ -77,5 +108,4 @@ public class RideOfferController {
         PageResponse<RideOfferResponse> response = rideOfferService.findAllRideOffersPaginated(page, size);
         return ResponseEntity.ok(response);
     }
-
 }
