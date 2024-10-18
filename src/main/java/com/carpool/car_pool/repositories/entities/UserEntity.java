@@ -50,11 +50,21 @@ public class UserEntity implements Principal  {
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RideRequestsEntity> rideRequests;
 
+    /**
+     * Returns the name of the principal, which is the user's email.
+     *
+     * @return The user's email.
+     */
     @Override
     public String getName() {
         return email;
     }
 
+    /**
+     * Returns the full name of the user by combining first and last names.
+     *
+     * @return The user's full name.
+     */
     public String getFullName() {
         return firstname + " " + lastname;
     }
