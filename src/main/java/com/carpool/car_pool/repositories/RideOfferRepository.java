@@ -8,7 +8,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for managing {@link RideOfferEntity} persistence.
+ */
 @Repository
 public interface RideOfferRepository extends JpaRepository<RideOfferEntity, Long>, JpaSpecificationExecutor<RideOfferEntity> {
+
+    /**
+     * Finds ride offers created by a specific user.
+     *
+     * @param creator The {@link UserEntity} who created the ride offers.
+     * @return An {@link Optional} containing the {@link RideOfferEntity} if found, or empty otherwise.
+     */
     Optional<RideOfferEntity> findByCreator(UserEntity creator);
 }
