@@ -39,9 +39,9 @@ public class RideOfferController {
 
     @GetMapping("/details")
     public ResponseEntity<RideOfferResponse> viewRideOfferDetails(
-            @RequestParam @Valid Long id
+            @RequestParam @Valid Long ID
     ) {
-        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(id));
+        return ResponseEntity.ok(rideOfferService.viewRideOfferDetail(ID));
     }
 
     @PutMapping("/details")
