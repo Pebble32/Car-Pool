@@ -10,7 +10,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for handling authentication and registration operations.
@@ -71,11 +75,10 @@ public class AuthController {
     /**
      * Endpoint to check the authentication status of the current user.
      *
-     * @param session The HTTP session containing user information.
      * @return ResponseEntity with the current user's information.
      */
     @GetMapping("/check")
-    public ResponseEntity<?> check(HttpSession session) {
+    public ResponseEntity<?> check() {
         return ResponseEntity.ok(currentUserService.getCurrentUser());
     }
 }
