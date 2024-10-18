@@ -29,15 +29,25 @@ import static com.carpool.car_pool.repositories.entities.RequestStatus.CANCELED;
 import static com.carpool.car_pool.repositories.entities.RequestStatus.PENDING;
 import static com.carpool.car_pool.repositories.entities.RideStatus.UNAVAILABLE;
 
+/**
+ * Service for managing ride requests.
+ */
 @Service
 @RequiredArgsConstructor
 public class RideRequestService {
-
 
     private final RideOfferRepository rideOfferRepository;
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
 
+    /**
+     * Creates a new ride request for a specific ride offer.
+     *
+     * @param request      The {@link RideRequestRequest} containing ride offer ID and request details.
+     * @param currentUser The {@link UserEntity} making the ride request.
+     * @return The ID of the created ride request.
+     * @throws RuntimeException if the ride offer is not available, the user is the creator, or a request already exists.
+     */
     @Transactional
     public Long createRideRequest(@Valid RideRequestRequest request, UserEntity currentUser) {
         var rideOffer = rideOfferRepository.findById(request.getRideOfferId())
@@ -66,10 +76,16 @@ public class RideRequestService {
                 .build();
 
         return rideRequestRepository.save(rideRequestEntity).getId();
-
-
     }
 
+    /**
+     * Retrieves all ride requests for a specific ride offer.
+     *
+     * @param rideOfferId  The ID of the ride offer.
+     * @param currentUser The {@link UserEntity} requesting the ride requests.
+     * @return A list of {@link RideRequestResponse} representing the ride requests.
+     * @throws RuntimeException if the ride offer is not found or the user is not authorized.
+     */
     public List<RideRequestResponse> getRideRequestsForRideOffer(Long rideOfferId, UserEntity currentUser) {
         var rideOffer = rideOfferRepository.findById(rideOfferId)
                 // TODO: Global exception handler RideOfferNotFoundException
@@ -86,6 +102,14 @@ public class RideRequestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Processes an answer to a ride request, either accepting or rejecting it.
+     *
+     * @param request      The {@link AnswerRideRequestRequest} containing the ride request ID and the answer status.
+     * @param currentUser The {@link UserEntity} answering the ride request.
+     * @return The updated {@link RideRequestResponse}.
+     * @throws RuntimeException if the ride request is invalid or the user is not authorized.
+     */
     public RideRequestResponse answerRideRequest(@Valid AnswerRideRequestRequest request, UserEntity currentUser) {
         var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
@@ -134,6 +158,12 @@ public class RideRequestService {
         return rideRequestConverter.entityToDTO(rideRequest);
     }
 
+    /**
+     * Retrieves all ride requests made by the current user.
+     *
+     * @param currentUser The {@link UserEntity} whose ride requests are to be retrieved.
+     * @return A list of {@link RideRequestResponse} representing the user's ride requests.
+     */
     public List<RideRequestResponse> getRideRequestsForUser(UserEntity currentUser) {
         Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRequester(currentUser));
 
@@ -143,6 +173,16 @@ public class RideRequestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a paginated list of ride requests for a specific ride offer.
+     *
+     * @param rideOfferId  The ID of the ride offer.
+     * @param currentUser The {@link UserEntity} requesting the ride requests.
+     * @param page         The page number (zero-based).
+     * @param size         The size of the page.
+     * @return A {@link PageResponse} containing the paginated ride requests.
+     * @throws RuntimeException if the ride offer is not found or the user is not authorized.
+     */
     public PageResponse<RideRequestResponse> getRideRequestsForRideOfferPaginated(Long rideOfferId, UserEntity currentUser, int page, int size) {
         var rideOffer = rideOfferRepository.findById(rideOfferId)
                 .orElseThrow(() -> new RuntimeException("Ride Offer Not Found"));
@@ -157,6 +197,14 @@ public class RideRequestService {
         return getRideRequestResponsePageResponse(pageable, spec);
     }
 
+    /**
+     * Retrieves a paginated list of ride requests made by the current user.
+     *
+     * @param currentUser The {@link UserEntity} whose ride requests are to be retrieved.
+     * @param page        The page number (zero-based).
+     * @param size        The size of the page.
+     * @return A {@link PageResponse} containing the paginated ride requests.
+     */
     public PageResponse<RideRequestResponse> getRideRequestsForUserPaginated(UserEntity currentUser, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Specification<RideRequestsEntity> spec = Specification.where(RideRequestSpecifications.hasRequester(currentUser));
@@ -164,6 +212,13 @@ public class RideRequestService {
         return getRideRequestResponsePageResponse(pageable, spec);
     }
 
+    /**
+     * Helper method to create a {@link PageResponse} from a paginated list of ride requests.
+     *
+     * @param pageable The {@link Pageable} object defining pagination parameters.
+     * @param spec     The {@link Specification} to filter ride requests.
+     * @return A {@link PageResponse} containing the paginated ride requests.
+     */
     private PageResponse<RideRequestResponse> getRideRequestResponsePageResponse(Pageable pageable, Specification<RideRequestsEntity> spec) {
         Page<RideRequestsEntity> rideRequestsPage = rideRequestRepository.findAll(spec, pageable);
 
@@ -181,5 +236,4 @@ public class RideRequestService {
                 rideRequestsPage.isLast()
         );
     }
-
 }

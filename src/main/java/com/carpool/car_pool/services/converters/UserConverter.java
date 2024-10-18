@@ -5,8 +5,18 @@ import com.carpool.car_pool.repositories.entities.UserEntity;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
+/**
+ * Converter for mapping between {@link RegisterRequest} and {@link UserEntity}.
+ */
 @Component
 public class UserConverter {
+
+    /**
+     * Converts a {@link RegisterRequest} DTO to a {@link UserEntity}.
+     *
+     * @param registerRequest The {@link RegisterRequest} to convert.
+     * @return The corresponding {@link UserEntity}.
+     */
     public UserEntity toEntity(@Valid RegisterRequest registerRequest) {
         return UserEntity.builder()
                 .email(registerRequest.getEmail())
@@ -16,5 +26,4 @@ public class UserConverter {
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .build();
     }
-
 }

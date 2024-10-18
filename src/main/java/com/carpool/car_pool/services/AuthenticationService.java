@@ -9,6 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for handling user authentication and registration.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -16,6 +19,12 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
 
+    /**
+     * Authenticates a user based on the provided authentication request.
+     *
+     * @param authenticationRequest The request containing the user's email and password.
+     * @throws RuntimeException if the user is not found or the password is incorrect.
+     */
     public void authenticate(@Valid AuthenticationRequest authenticationRequest) {
         UserEntity userEntity = userRepository
                 .findByEmail(authenticationRequest.getEmail()) //TODO: Better exception handling| UserNotFoundException
@@ -27,6 +36,12 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * Registers a new user based on the provided registration request.
+     *
+     * @param registerRequest The request containing the user's registration details.
+     * @throws RuntimeException if a user with the provided email already exists.
+     */
     public void register(@Valid RegisterRequest registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("User with this email already exists");

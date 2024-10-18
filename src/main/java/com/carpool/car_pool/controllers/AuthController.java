@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for handling authentication and registration operations.
+ */
 @RestController
 @RequestMapping("auth")
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class AuthController {
      * Endpoint to authenticate a user.
      *
      * @param authenticationRequest The authentication request containing email and password.
+     * @param session               The HTTP session to store user information.
      * @return ResponseEntity with HTTP status.
      */
     @PostMapping("/authenticate")
@@ -56,14 +60,25 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    /**
+     * Endpoint to log out the current user by invalidating the session.
+     *
+     * @param session The HTTP session to be invalidated.
+     * @return ResponseEntity with HTTP status.
+     */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /**
+     * Endpoint to check the authentication status of the current user.
+     *
+     * @return ResponseEntity with the current user's information.
+     */
     @GetMapping("/check")
-    public ResponseEntity<?> check(HttpSession session) {
+    public ResponseEntity<?> check() {
         return ResponseEntity.ok(currentUserService.getCurrentUser());
     }
 }

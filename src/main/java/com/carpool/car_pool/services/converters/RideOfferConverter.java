@@ -6,9 +6,18 @@ import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
 import org.springframework.stereotype.Component;
 
+/**
+ * Converter for mapping between {@link RideOfferRequest}, {@link RideOfferResponse}, and {@link RideOfferEntity}.
+ */
 @Component
 public class RideOfferConverter {
 
+    /**
+     * Converts a {@link RideOfferRequest} DTO to a {@link RideOfferEntity}.
+     *
+     * @param rq The {@link RideOfferRequest} to convert.
+     * @return The corresponding {@link RideOfferEntity}.
+     */
     public RideOfferEntity dtoToEntity(RideOfferRequest rq) {
         return RideOfferEntity.builder()
                 .startLocation(rq.getStartLocation())
@@ -19,6 +28,12 @@ public class RideOfferConverter {
                 .build();
     }
 
+    /**
+     * Converts a {@link RideOfferEntity} to a {@link RideOfferResponse} DTO.
+     *
+     * @param rideOfferEntity The {@link RideOfferEntity} to convert.
+     * @return The corresponding {@link RideOfferResponse}.
+     */
     public RideOfferResponse entityToDTO(RideOfferEntity rideOfferEntity) {
         return RideOfferResponse.builder()
                 .id(rideOfferEntity.getId())

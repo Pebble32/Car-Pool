@@ -11,12 +11,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+/**
+ * Controller for managing ride requests.
+ */
 @RestController
 @RequestMapping("ride-requests")
 @RequiredArgsConstructor
@@ -26,6 +36,12 @@ public class RideRequestController {
     private final RideRequestService rideRequestService;
     private final CurrentUserService currentUserService;
 
+    /**
+     * Creates a new ride request.
+     *
+     * @param rideRequestRequest The request containing details for the new ride request.
+     * @return ResponseEntity containing the ID of the created ride request.
+     */
     @PostMapping("/create")
     public ResponseEntity<Long> createRideRequest(
             @RequestBody @Valid RideRequestRequest rideRequestRequest
@@ -35,6 +51,12 @@ public class RideRequestController {
         return ResponseEntity.status(CREATED).body(rideRequestId);
     }
 
+    /**
+     * Retrieves all ride requests for a specific ride offer.
+     *
+     * @param rideOfferId The unique identifier of the ride offer.
+     * @return ResponseEntity containing a list of {@link RideRequestResponse}.
+     */
     @GetMapping("/requests")
     public ResponseEntity<List<RideRequestResponse>> getRideOffers(
             @RequestParam Long rideOfferId
@@ -43,6 +65,12 @@ public class RideRequestController {
         return ResponseEntity.ok(rideRequestService.getRideRequestsForRideOffer(rideOfferId, currentUser));
     }
 
+    /**
+     * Answers a ride request by accepting or rejecting it.
+     *
+     * @param request The request containing the ride request ID and the response.
+     * @return ResponseEntity containing the updated {@link RideRequestResponse}.
+     */
     @PutMapping("/answer")
     public ResponseEntity<RideRequestResponse> answerRideOffer(
             @RequestBody @Valid AnswerRideRequestRequest request
@@ -53,16 +81,24 @@ public class RideRequestController {
     }
 
     /**
-     * Returns all the ride requests that have been made by the current user
-     * @return List of ride requests
+     * Returns all the ride requests that have been made by the current user.
+     *
+     * @return ResponseEntity containing a list of the user's ride requests.
      */
     @GetMapping("/user-requests")
-    public ResponseEntity<List<RideRequestResponse>> viewUsersRideRequests(
-    ){
+    public ResponseEntity<List<RideRequestResponse>> viewUsersRideRequests() {
         UserEntity currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok(rideRequestService.getRideRequestsForUser(currentUser));
     }
 
+    /**
+     * Retrieves a paginated list of ride requests for a specific ride offer.
+     *
+     * @param rideOfferId The unique identifier of the ride offer.
+     * @param page        The page number (zero-based).
+     * @param size        The size of the page.
+     * @return ResponseEntity containing a {@link PageResponse} of ride requests.
+     */
     @GetMapping("/requests/paginated")
     public ResponseEntity<PageResponse<RideRequestResponse>> getRideRequestsForRideOfferPaginated(
             @RequestParam Long rideOfferId,
@@ -74,6 +110,13 @@ public class RideRequestController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Retrieves a paginated list of ride requests made by the current user.
+     *
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @return ResponseEntity containing a {@link PageResponse} of the user's ride requests.
+     */
     @GetMapping("/user-requests/paginated")
     public ResponseEntity<PageResponse<RideRequestResponse>> viewUsersRideRequestsPaginated(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
