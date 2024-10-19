@@ -32,8 +32,4 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getUsers() {
         return ResponseEntity.ok(userService.findAllUsers());
     }
-
-    public static void main(String[] args) {
-
-    }
 }
