@@ -52,6 +52,7 @@ public class RideOfferEntity {
     @Enumerated(EnumType.STRING)
     private RideStatus status;
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private UserEntity creator;
@@ -66,4 +67,5 @@ public class RideOfferEntity {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
+
 }
