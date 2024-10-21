@@ -66,4 +66,5 @@ public class RideOfferEntity {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
+
 }

@@ -3,15 +3,17 @@ package com.carpool.car_pool.services;
 import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
-import com.carpool.car_pool.repositories.entities.RequestStatus;
+import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
-import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.repositories.entities.UserEntity;
-import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.RequestStatus;
+import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
+import com.carpool.car_pool.services.converters.UserConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,7 @@ public class RideOfferService {
     private final RideOfferRepository rideOfferRepository;
     private final RideOfferConverter rideOfferConverter;
     private final RideRequestRepository rideRequestRepository;
+    private final UserConverter userConverter;
 
     /**
      * Retrieves all ride offers.
@@ -172,5 +176,23 @@ public class RideOfferService {
 
         // TODO: When notification is implemented we should notify all requests for the ride offer here
         rideOfferRepository.delete(rideOffer);
+    }
+
+    /**
+     * Retrieves all providers of ride offers.
+     *
+     * @return A list of {@link UserEntity} representing all providers.
+     */
+    public List<UserResponse> getAllProviders() {
+        return new ArrayList<>(rideOfferRepository.findAll()
+                .stream()
+                .map(RideOfferEntity::getCreator)
+                .map(userConverter::entityToDTO)
+                .collect(Collectors.toMap(
+                        UserResponse::getId,
+                        user -> user,
+                        (existing, replacement) -> existing
+                ))
+                .values());
     }
 }
