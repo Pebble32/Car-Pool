@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller for handling authentication and registration operations.
  */
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("auth")
 @RequiredArgsConstructor
@@ -39,7 +41,6 @@ public class AuthController {
     public ResponseEntity<?> authenticate(
             @RequestBody @Valid AuthenticationRequest authenticationRequest,
             HttpSession session
-            // TODO: Add HttpServletRequest so when page is reloaded we don't have to log in again
     ) {
         authService.authenticate(authenticationRequest);
         session.setAttribute("userEmail", authenticationRequest.getEmail());
@@ -79,6 +80,6 @@ public class AuthController {
      */
     @GetMapping("/check")
     public ResponseEntity<?> check() {
-        return ResponseEntity.ok(currentUserService.getCurrentUser());
+        return ResponseEntity.ok(currentUserService.getCurrentUserEmail());
     }
 }
