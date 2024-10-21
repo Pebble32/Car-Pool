@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -179,11 +180,15 @@ public class RideOfferService {
      * @return A list of {@link UserEntity} representing all providers.
      */
     public List<UserResponse> getAllProviders() {
-        return rideOfferRepository.findAll()
+        return new ArrayList<>(rideOfferRepository.findAll()
                 .stream()
                 .map(RideOfferEntity::getCreator)
                 .map(userConverter::entityToDTO)
-                .distinct()
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        UserResponse::getId,
+                        user -> user,
+                        (existing, replacement) -> existing
+                ))
+                .values());
     }
 }
