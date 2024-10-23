@@ -1,7 +1,9 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.services.converters.UserConverter;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ public class CurrentUserService {
 
     private final UserRepository userRepository;
     private final HttpSession httpSession;
+    private final UserConverter userConverter;
 
     /**
      * Retrieves the currently authenticated user from the session.
@@ -42,5 +45,19 @@ public class CurrentUserService {
             throw new RuntimeException("No user authenticated. Email not found in session.");
         }
         return httpSession.getAttribute("userEmail").toString();
+    }
+
+
+    /**
+     * Retrieves the current user information
+     *
+     * @return {@link UserResponse}
+     */
+    public UserResponse getCurrentUserResponse() {
+        String userEmail = (String) httpSession.getAttribute("userEmail");
+
+        return userRepository.findByEmail(userEmail)
+                .map(userConverter::entityToDTO)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

@@ -25,6 +25,7 @@ public class UserConverter {
                 .firstname(registerRequest.getFirstname())
                 .lastname(registerRequest.getLastname())
                 .phoneNumber(registerRequest.getPhoneNumber())
+                .profilePicture(registerRequest.getProfilePicture())
                 .build();
     }
 
@@ -40,6 +41,7 @@ public class UserConverter {
                 .firstname(userEntity.getFirstname())
                 .lastname(userEntity.getLastname())
                 .phoneNumber(userEntity.getPhoneNumber())
+                .profilePicture(userEntity.getProfilePicture())
                 .build();
     }
 }
