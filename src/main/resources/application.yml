@@ -13,4 +13,8 @@ springdoc:
 server:
   servlet:
     context-path: /api/v1/
+    session:
+      cookie:
+        same-site: None
+        secure: true
   port: 8088
