@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${application.file.upload.photos-output-path}")
+    @Value("${spring.file.upload.photos-output-path}")
     private String fileUploadPath;
 
     private final UserRepository userRepository;
