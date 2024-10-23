@@ -7,6 +7,7 @@ import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.RequestStatus;
+import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.repositories.entities.UserEntity;
@@ -243,12 +244,31 @@ public class RideRequestService {
 
 
     /**
+     * Deletes ride request
      *
-     * @param currentUser
-     * @param id
+     * @param id   The ID of the ride offer to delete.
+     * @param currentUser The {@link UserEntity} attempting to delete the ride offer.
+     * @throws RuntimeException if the ride offer does not exist or the user is not authorized to delete it.
      */
     @Transactional
     public void deleteRequest(UserEntity currentUser, Long id) {
+        RideRequestsEntity rideRequest = rideRequestRepository.findById(id)
+                //TODO Add global exception handling
+                .orElseThrow(() -> new RuntimeException("Ride request does not exist"));
 
+        if (!rideRequest.getRequester().equals(currentUser)) {
+            throw new RuntimeException("Only owner can delete this ride offer");
+        }
+
+        RideOfferEntity rideOffer = rideOfferRepository
+                .findById(rideRequest.getRideOffer().getId())
+                        .orElseThrow(() -> new RuntimeException("Ride Offer Not Found"));
+
+        if (!rideOffer.getStatus().equals(RideStatus.AVAILABLE)) {
+            throw new RuntimeException("Can not delete ride that is no longer available");
+        }
+        rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
+
+        rideRequestRepository.delete(rideRequest);
     }
 }
