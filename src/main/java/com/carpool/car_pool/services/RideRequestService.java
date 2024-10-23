@@ -240,4 +240,15 @@ public class RideRequestService {
                 rideRequestsPage.isLast()
         );
     }
+
+
+    /**
+     *
+     * @param currentUser
+     * @param id
+     */
+    @Transactional
+    public void deleteRequest(UserEntity currentUser, Long id) {
+
+    }
 }
