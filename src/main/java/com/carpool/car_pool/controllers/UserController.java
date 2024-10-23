@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Controller for user-related operations.
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("users")
 @RequiredArgsConstructor
 @Tag(name = "User")
 public class UserController {
