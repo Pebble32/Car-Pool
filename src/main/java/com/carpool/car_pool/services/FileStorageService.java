@@ -1,9 +1,6 @@
 package com.carpool.car_pool.services;
 
-import com.carpool.car_pool.repositories.UserRepository;
-import com.carpool.car_pool.repositories.entities.UserEntity;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,28 +16,17 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class FileStorageService {
 
     @Value("${spring.file.upload.photos-output-path}")
     private String fileUploadPath;
 
-    private final UserRepository userRepository;
-
-    public void saveProfilePicture(
+    public String saveProfilePicture(
             @NotNull MultipartFile file,
-            @NotNull UserEntity user
+            @NotNull Long userId
     ) {
-        final String fileUploadSubPath = "users" + File.separator + user.getId();
-        String profilePicturePath = uploadFile(file, fileUploadSubPath);
-
-        if (profilePicturePath != null) {
-            // Update user's profile picture path
-            user.setProfilePicture(profilePicturePath);
-            // Save the updated user entity
-            userRepository.save(user);
-            log.info("Profile picture updated for user: {}", user.getEmail());
-        }
+        final String fileUploadSubPath = "users" + File.separator + userId;
+        return uploadFile(file, fileUploadSubPath);
     }
 
     private String uploadFile(

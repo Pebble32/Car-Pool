@@ -3,6 +3,7 @@ package com.carpool.car_pool.controllers;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.FileStorageService;
+import com.carpool.car_pool.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "User")
 public class UserController {
 
-    private final CurrentUserService currentUserService;
-    private final FileStorageService fileStorageService;
+    private final UserService userService;
 
     /**
      * Endpoint to upload or update the user's profile picture.
@@ -35,9 +35,7 @@ public class UserController {
     public ResponseEntity<?> uploadProfilePicture(
             @RequestPart("file") MultipartFile file
     ) {
-
-        UserEntity currentUser = currentUserService.getCurrentUser();
-        fileStorageService.saveProfilePicture(file, currentUser);
+        userService.uploadProfilePicture(file);
         return ResponseEntity.accepted().build();
     }
 }
