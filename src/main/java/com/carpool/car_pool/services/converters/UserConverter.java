@@ -31,17 +31,20 @@ public class UserConverter {
 
     /**
      * Converts a {@link UserEntity} to a {@link UserResponse} DTO.
+     *
      * @param userEntity The {@link UserEntity} to convert.
      * @return The corresponding {@link UserResponse}.
      */
-    public UserResponse entityToDTO (UserEntity userEntity) {
+    public UserResponse entityToDTO(@Valid UserEntity userEntity) {
         return UserResponse.builder()
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
-                .firstname(userEntity.getFirstname())
-                .lastname(userEntity.getLastname())
-                .phoneNumber(userEntity.getPhoneNumber())
+                .firstName(userEntity.getFirstname())
+                .lastName(userEntity.getLastname())
                 .profilePicture(userEntity.getProfilePicture())
+                .phoneNumber(userEntity.getPhoneNumber())
+                .createdDate(userEntity.getCreatedDate())
+                .lastModifiedDate(userEntity.getLastModifiedDate())
                 .build();
     }
 }
