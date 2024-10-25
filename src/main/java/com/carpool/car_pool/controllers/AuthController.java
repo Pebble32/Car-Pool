@@ -2,6 +2,7 @@ package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.AuthenticationRequest;
 import com.carpool.car_pool.controllers.dtos.RegisterRequest;
+import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.services.AuthenticationService;
 import com.carpool.car_pool.services.CurrentUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -81,5 +82,15 @@ public class AuthController {
     @GetMapping("/check")
     public ResponseEntity<?> check() {
         return ResponseEntity.ok(currentUserService.getCurrentUserEmail());
+    }
+
+    /**
+     * Endpoint to get current user information
+     *
+     * @return {@link UserResponse}
+     */
+    @GetMapping("/get-user")
+    public ResponseEntity<UserResponse> getUser() {
+        return ResponseEntity.ok(currentUserService.getCurrentUserResponse());
     }
 }
