@@ -1,9 +1,13 @@
 package com.carpool.car_pool.repositories.specifications;
 
 import com.carpool.car_pool.repositories.entities.RideOfferEntity;
+import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 public class RideOfferSpecifications {
 

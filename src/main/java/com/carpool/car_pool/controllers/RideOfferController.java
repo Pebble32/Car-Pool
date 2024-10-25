@@ -129,6 +129,18 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.getAllProviders());
     }
 
+
+    /**
+     * Deletes rides that are finished
+     * @return ResponseEntity ok on successful deletion
+     */
+    @DeleteMapping("/delete-finished")
+    public ResponseEntity<Void> deleteRideOfferFinished() {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        rideOfferService.deleteFinishedRide();
+        return ResponseEntity.ok().build();
+    }
+
     /**
      * Searches for ride offers based on the provided parameters.
      * @param page The page number (zero-based).

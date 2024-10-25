@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -269,5 +270,18 @@ public class RideOfferService {
                         (existing, replacement) -> existing
                 ))
                 .values());
+    }
+
+
+    @Scheduled(cron = "0 0 2 * * ?")
+    @Transactional
+    public void deleteFinishedRide() {
+        // TODO add specification here
+        // Specification should look at rides that are finished two days ago
+        List<RideOfferEntity> rideOffers = rideOfferRepository.findAll();
+
+        //TODO delete every ride request in every ride offer that has to be deleted
+
+        // TODO delete each ride offer that finished two days ago
     }
 }
