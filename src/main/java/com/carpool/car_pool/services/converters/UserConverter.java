@@ -38,7 +38,6 @@ public class UserConverter {
         return UserResponse.builder()
                 .id(userEntity.getId())
                 .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
                 .firstName(userEntity.getFirstname())
                 .lastName(userEntity.getLastname())
                 .profilePicture(userEntity.getProfilePicture())
