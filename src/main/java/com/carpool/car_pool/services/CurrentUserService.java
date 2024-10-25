@@ -25,9 +25,22 @@ public class CurrentUserService {
     public UserEntity getCurrentUser() {
         String userEmail = (String) httpSession.getAttribute("userEmail");
         if (userEmail == null) {
-            throw new RuntimeException("User not authenticated");
+            throw new RuntimeException("User not authenticated. Email not found in session.");
         }
         return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
+    /**
+     * Retrieves the currently authenticated user email from the session
+     *
+     * @return The user email as String
+     */
+    public String getCurrentUserEmail() {
+        if (httpSession.getAttribute("userEmail") == null) {
+            throw new RuntimeException("No user authenticated. Email not found in session.");
+        }
+        return httpSession.getAttribute("userEmail").toString();
     }
 }

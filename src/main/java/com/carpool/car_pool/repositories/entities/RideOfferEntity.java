@@ -1,6 +1,8 @@
 package com.carpool.car_pool.repositories.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class RideOfferEntity {
 
     @Id
@@ -52,10 +55,12 @@ public class RideOfferEntity {
     @Enumerated(EnumType.STRING)
     private RideStatus status;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private UserEntity creator;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "rideOffer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RideRequestsEntity> rideRequests;
 
@@ -66,4 +71,5 @@ public class RideOfferEntity {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
+
 }

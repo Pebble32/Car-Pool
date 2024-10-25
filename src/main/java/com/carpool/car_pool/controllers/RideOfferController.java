@@ -3,6 +3,7 @@ package com.carpool.car_pool.controllers;
 import com.carpool.car_pool.controllers.dtos.EditRideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
+import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.CurrentUserService;
@@ -116,5 +117,14 @@ public class RideOfferController {
     ) {
         PageResponse<RideOfferResponse> response = rideOfferService.findAllRideOffersPaginated(page, size);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Returns a list of all providers
+     * @return ResponseEntity containing a list of {@link UserEntity}.
+     */
+    @GetMapping("/all/providers")
+    public ResponseEntity<List<UserResponse>> showAllProviders() {
+        return ResponseEntity.ok(rideOfferService.getAllProviders());
     }
 }

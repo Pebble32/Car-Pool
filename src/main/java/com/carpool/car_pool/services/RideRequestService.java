@@ -64,6 +64,10 @@ public class RideRequestService {
             throw new RuntimeException("You can not request a ride on your own offer");
         }
 
+        if (!rideOffer.getStatus().equals(RideStatus.AVAILABLE)) {
+            throw new RuntimeException("Ride Offer Not Available");
+        }
+
         boolean alreadyRequested = rideRequestRepository.existsByRideOfferIdAndRequesterId(request.getRideOfferId(), currentUser.getId());
         if (alreadyRequested) {
             throw new RuntimeException("You have already requested this Ride Offer");
