@@ -53,19 +53,18 @@ public class UserService {
                 usersPage.isFirst(),
                 usersPage.isLast()
         );
-      
-      
-
-    public void uploadProfilePicture(@NotNull MultipartFile file) {
-        UserEntity currentUser = currentUserService.getCurrentUser();
-
-        String profilePicturePath = fileStorageService
-                .saveProfilePicture(file, currentUser.getId());
-
-        if (profilePicturePath != null) {
-            currentUser.setProfilePicture(profilePicturePath);
-            userRepository.save(currentUser);
-        }
     }
 
+
+        public void uploadProfilePicture (@NotNull MultipartFile file){
+            UserEntity currentUser = currentUserService.getCurrentUser();
+
+            String profilePicturePath = fileStorageService
+                    .saveProfilePicture(file, currentUser.getId());
+
+            if (profilePicturePath != null) {
+                currentUser.setProfilePicture(profilePicturePath);
+                userRepository.save(currentUser);
+            }
+        }
 }
