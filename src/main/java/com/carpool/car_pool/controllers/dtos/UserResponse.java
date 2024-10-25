@@ -17,5 +17,5 @@ public class UserResponse {
     private String profilePicture;
     private String phoneNumber;
     private LocalDate createdDate;
-    private LocalDate lastModifiedDate;
+    private LocalDate lastModifiedDate
 }

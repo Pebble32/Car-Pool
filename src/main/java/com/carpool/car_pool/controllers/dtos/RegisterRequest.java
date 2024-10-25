@@ -27,4 +27,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "Last name can't be empty")
     private String phoneNumber;
+
+    private String profilePicture;
 }

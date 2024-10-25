@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 /**
@@ -22,6 +25,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final FileStorageService fileStorageService;
+    private final CurrentUserService currentUserService;
 
     /**
      * Retrieves paginated list of all users.
@@ -48,5 +53,19 @@ public class UserService {
                 usersPage.isFirst(),
                 usersPage.isLast()
         );
+      
+      
+
+    public void uploadProfilePicture(@NotNull MultipartFile file) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+
+        String profilePicturePath = fileStorageService
+                .saveProfilePicture(file, currentUser.getId());
+
+        if (profilePicturePath != null) {
+            currentUser.setProfilePicture(profilePicturePath);
+            userRepository.save(currentUser);
+        }
     }
+
 }
