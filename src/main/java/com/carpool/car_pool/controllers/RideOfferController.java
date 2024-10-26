@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -126,5 +127,25 @@ public class RideOfferController {
     @GetMapping("/all/providers")
     public ResponseEntity<List<UserResponse>> showAllProviders() {
         return ResponseEntity.ok(rideOfferService.getAllProviders());
+    }
+
+    /**
+     * Searches for ride offers based on the provided parameters.
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @param startLocation The starting location of the ride.
+     * @param endLocation The destination of the ride.
+     * @param departureTime The departure time of the ride.
+     * @return ResponseEntity containing a paginated list of {@link RideOfferResponse}.
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<PageResponse<RideOfferResponse>> FilterRideOffers(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(name = "startLocation", required = false) String startLocation,
+            @RequestParam(name = "endLocation", required = false) String endLocation,
+            @RequestParam(name = "departureTime", required = false) LocalDateTime departureTime
+    ) {
+        return ResponseEntity.ok(rideOfferService.filterRides(startLocation, endLocation, departureTime, page, size));
     }
 }

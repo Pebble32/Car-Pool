@@ -7,11 +7,12 @@ import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideOfferEntity;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
-import com.carpool.car_pool.repositories.entities.UserEntity;
-import com.carpool.car_pool.repositories.entities.RequestStatus;
 import com.carpool.car_pool.repositories.entities.RideStatus;
+import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.repositories.specifications.RideOfferSpecifications;
 import com.carpool.car_pool.services.converters.RideOfferConverter;
 import com.carpool.car_pool.services.converters.UserConverter;
 import jakarta.validation.Valid;
@@ -20,9 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -155,6 +158,49 @@ public class RideOfferService {
                 rideOfferPage.isFirst(),
                 rideOfferPage.isLast()
         );
+    }
+
+    /**
+     * Searches for ride offers based on the provided parameters.
+     * @param startLocation The starting location of the ride.
+     * @param endLocation The destination of the ride.
+     * @param departureTime The departure time of the ride.
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @return A {@link PageResponse} containing ride offers.
+     */
+    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
+
+        Specification<RideOfferEntity> spec = Specification.where(null);
+
+        if (startLocation != null && !startLocation.isEmpty()) {
+            spec = spec.and(RideOfferSpecifications.hasStartLocation(startLocation));
+        }
+        if (endLocation != null && !endLocation.isEmpty()) {
+            spec = spec.and(RideOfferSpecifications.hasEndLocation(endLocation));
+        }
+        if (departureTime != null) {
+            spec = spec.and(RideOfferSpecifications.hasDepartureTime(departureTime));
+        }
+
+        Page<RideOfferEntity> rideOfferPage = rideOfferRepository.findAll(spec, pageable);
+
+        List<RideOfferResponse> rideOffers = rideOfferPage
+                .stream()
+                .map(rideOfferConverter::entityToDTO)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                rideOffers,
+                rideOfferPage.getNumber(),
+                rideOfferPage.getSize(),
+                rideOfferPage.getTotalElements(),
+                rideOfferPage.getTotalPages(),
+                rideOfferPage.isFirst(),
+                rideOfferPage.isLast()
+        );
+
     }
 
     /**
