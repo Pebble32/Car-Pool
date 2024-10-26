@@ -169,7 +169,7 @@ public class RideOfferService {
      * @param size The size of the page.
      * @return A {@link PageResponse} containing ride offers.
      */
-    public PageResponse<RideOfferResponse> searchForRides(String startLocation, String endLocation, LocalDateTime departureTime, int page, int size) {
+    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
 
         Specification<RideOfferEntity> spec = Specification.where(null);
@@ -191,7 +191,7 @@ public class RideOfferService {
                 .map(rideOfferConverter::entityToDTO)
                 .collect(Collectors.toList());
 
-        return rideOffers.isEmpty() ? null : new PageResponse<>(
+        return new PageResponse<>(
                 rideOffers,
                 rideOfferPage.getNumber(),
                 rideOfferPage.getSize(),
