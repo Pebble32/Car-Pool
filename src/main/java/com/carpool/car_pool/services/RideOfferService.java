@@ -161,7 +161,7 @@ public class RideOfferService {
     }
 
     /**
-     * Searches for ride offers based on the provided parameters.
+     * Filters ride offers based on the provided parameters.
      * @param startLocation The starting location of the ride.
      * @param endLocation The destination of the ride.
      * @param departureTime The departure time of the ride.
@@ -201,6 +201,35 @@ public class RideOfferService {
                 rideOfferPage.isLast()
         );
 
+    }
+
+    /**
+     * Searches for ride offers based on the provided keyword
+     * @param keyword The keyword used for the search
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @return  A {@link PageResponse} containing ride offers.
+     */
+    public PageResponse<RideOfferResponse> searchForRides(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
+
+        Specification<RideOfferEntity> spec = Specification.where(RideOfferSpecifications.containsKeyword(keyword));
+
+        Page<RideOfferEntity> rideOfferPage = rideOfferRepository.findAll(spec, pageable);
+
+        List<RideOfferResponse> rideOffers = rideOfferPage.stream()
+                .map(rideOfferConverter::entityToDTO)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                rideOffers,
+                rideOfferPage.getNumber(),
+                rideOfferPage.getSize(),
+                rideOfferPage.getTotalElements(),
+                rideOfferPage.getTotalPages(),
+                rideOfferPage.isFirst(),
+                rideOfferPage.isLast()
+        );
     }
 
     /**

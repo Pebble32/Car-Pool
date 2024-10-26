@@ -148,4 +148,20 @@ public class RideOfferController {
     ) {
         return ResponseEntity.ok(rideOfferService.filterRides(startLocation, endLocation, departureTime, page, size));
     }
+
+    /**
+     * Searches for ride offers based on the provided keyword.
+     * @param page The page number (zero-based).
+     * @param size The size of the page.
+     * @param keyword The keyword to search for.
+     * @return ResponseEntity containing a paginated list of {@link RideOfferResponse}.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<RideOfferResponse>> searchForRides(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(name = "keyword", required = true) String keyword
+    ) {
+        return ResponseEntity.ok(rideOfferService.searchForRides(keyword, page, size));
+    }
 }

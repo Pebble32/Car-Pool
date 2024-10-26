@@ -33,4 +33,19 @@ public class RideOfferSpecifications {
     public static Specification<RideOfferEntity> hasDepartureTime(LocalDateTime departureTime) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("departureTime"), departureTime);
     }
+
+    /**
+     * Specification to search for ride offers by a keyword that can be either the startLocation, endLocation or the creotor
+     * of the ride.
+     * @param keyword The keyword being used for the search
+     * @return Specification for the keyword
+     */
+    public static Specification<RideOfferEntity> containsKeyword(String keyword){
+        return (root, query, criteriaBuilder) -> criteriaBuilder.or(
+                criteriaBuilder.like(root.get("startLocation"), "%" + keyword + "%"),
+                criteriaBuilder.like(root.get("endLocation"), "%" + keyword + "%"),
+                criteriaBuilder.like(root.join("creator").get("email"), "%" + keyword + "%"),
+                criteriaBuilder.like(root.join("creator").get("firstname"), "%" + keyword + "%")
+        );
+    }
 }
