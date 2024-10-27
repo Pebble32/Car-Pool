@@ -42,4 +42,24 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    /**
+     * Sends an HTML email.
+     *
+     * @param to            The recipient's email address.
+     * @param context       The variables for the email.
+     * @param emailTemplate The email HTML template to use.
+     * @throws MessagingException The base class for all exceptions thrown by the Messaging classes.
+     */
+    private void sendHtmlEmail(String to, String subject, Context context, EmailTemplate emailTemplate) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        String htmlContent = templateEngine.process(emailTemplate.getHtml(), context);
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true);
+
+        mailSender.send(message);
+    }
 }
