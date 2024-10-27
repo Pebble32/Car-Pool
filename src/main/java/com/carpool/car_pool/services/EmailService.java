@@ -42,6 +42,25 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendRideRequestNotificationEmail(UserEntity receiver, RideRequestsEntity rideRequest) throws MessagingException {
+        Context context = new Context();
+        context.setVariable("name", receiver.getFirstname());
+        context.setVariable("requestersFullName", rideRequest.getRequester().getFullName());
+        context.setVariable("requestersFirstname", rideRequest.getRequester().getFirstname());
+        context.setVariable("startLocation", rideRequest.getRideOffer().getStartLocation());
+        context.setVariable("endLocation", rideRequest.getRideOffer().getEndLocation());
+        context.setVariable("departureTime", rideRequest.getRideOffer().getDepartureTime().format(
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+        ));
+        context.setVariable("requestLink", "https://www.mbl.is/frettir/"); // TODO: Replace with the correct link.
+
+        String subject = rideRequest.getRequester().getFirstname()
+                + " asked for a ride to "
+                + rideRequest.getRideOffer().getEndLocation();
+
+        sendHtmlEmail(receiver.getEmail(), subject, context, RIDE_REQUEST);
+    }
+
     /**
      * Sends an HTML email.
      *

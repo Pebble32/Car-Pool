@@ -3,16 +3,17 @@ package com.carpool.car_pool.services;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
+import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class UserService {
     private final UserConverter userConverter;
     private final FileStorageService fileStorageService;
     private final CurrentUserService currentUserService;
+    private final EmailService emailService;
 
     /**
      * Retrieves paginated list of all users.
@@ -55,16 +57,35 @@ public class UserService {
         );
     }
 
+    public void uploadProfilePicture(@NotNull MultipartFile file) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
 
-        public void uploadProfilePicture (@NotNull MultipartFile file){
-            UserEntity currentUser = currentUserService.getCurrentUser();
+        String profilePicturePath = fileStorageService
+                .saveProfilePicture(file, currentUser.getId());
 
-            String profilePicturePath = fileStorageService
-                    .saveProfilePicture(file, currentUser.getId());
-
-            if (profilePicturePath != null) {
-                currentUser.setProfilePicture(profilePicturePath);
-                userRepository.save(currentUser);
-            }
+        if (profilePicturePath != null) {
+            currentUser.setProfilePicture(profilePicturePath);
+            userRepository.save(currentUser);
         }
+    }
+
+    /**
+     * Sends a notification to a given {@link UserEntity} with a given message.
+     *
+     * @param user    The {@link UserEntity} that should receive the notification.
+     * @param message The message that goes with the notification.
+     */
+    public void sendNotification(UserEntity user, String message) {
+        emailService.sendSimpleEmail(user.getEmail(), "some subject", message);
+        // TODO: Sends email and pop up notification
+    }
+
+    public void sendRideRequestNotification(UserEntity receiver, RideRequestsEntity rideRequest) {
+        try {
+            emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
+        } catch (MessagingException e) {
+            System.out.println("Sending email failed: " + e.getMessage());
+        }
+        // TODO: Sends email and pop up notification
+    }
 }
