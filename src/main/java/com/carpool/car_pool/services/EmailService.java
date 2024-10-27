@@ -24,7 +24,9 @@ import static com.carpool.car_pool.services.EmailTemplate.RIDE_REQUEST;
 @RequiredArgsConstructor
 public class EmailService {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final JavaMailSender mailSender;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final TemplateEngine templateEngine;
 
     /**
