@@ -66,7 +66,8 @@ public class UserController {
     public ResponseEntity<?> uploadProfilePicture(
             @RequestPart("file") MultipartFile file
     ) {
-        userService.uploadProfilePicture(file);
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.uploadProfilePicture(file, currentUser);
         return ResponseEntity.accepted().build();
     }
 

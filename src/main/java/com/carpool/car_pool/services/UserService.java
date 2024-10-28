@@ -77,14 +77,15 @@ public class UserService {
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             BufferedImage originalImage = ImageIO.read(inputStream);
 
-            // Step 2: Determine if resizing is necessary
+            // determine if resizing is necessary
             int originalWidth = originalImage.getWidth();
             int originalHeight = originalImage.getHeight();
-            int targetWidth = 200;  // Set your target width
-            int targetHeight = 200; // Set your target height
+            //Might need to change later w/h
+            int targetWidth = 200;
+            int targetHeight = 200;
 
             if (originalWidth > targetWidth || originalHeight > targetHeight) {
-                // Calculate the aspect ratio to maintain proportions
+                // aspect ratio to maintain proportions
                 double widthRatio = (double) targetWidth / originalWidth;
                 double heightRatio = (double) targetHeight / originalHeight;
                 double scaleRatio = Math.min(widthRatio, heightRatio);
@@ -92,26 +93,23 @@ public class UserService {
                 int newWidth = (int) (originalWidth * scaleRatio);
                 int newHeight = (int) (originalHeight * scaleRatio);
 
-                // Step 3: Resize the image while maintaining aspect ratio
+                // resize the image while maintaining aspect ratio
                 BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
                 Graphics2D graphics2D = resizedImage.createGraphics();
                 graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 graphics2D.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
                 graphics2D.dispose();
 
-                // Step 4: Convert the resized BufferedImage back to byte[]
+                // convert the resized BufferedImage back to byte[]
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ImageIO.write(resizedImage, "jpeg", byteArrayOutputStream);
                 byte[] downsampledImageBytes = byteArrayOutputStream.toByteArray();
 
-                // Step 5: Save the downsampled image in the database
                 user.setProfilePicture(downsampledImageBytes);
             } else {
-                // If the image is within the target size, save it as is
                 user.setProfilePicture(file.getBytes());
             }
 
-            // Save the user entity to persist the profile picture
             userRepository.save(user);
         } catch (IOException e) {
             //TODO FailedFileUploadException | Global exception handling
