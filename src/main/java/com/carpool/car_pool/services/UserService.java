@@ -11,10 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -71,5 +73,15 @@ public class UserService {
             // TODO add UploadPictureException | Global exception handling
             throw new RuntimeException("Failed to upload profile picture", e);
         }
+    }
+
+    public String getProfilePicture(UserEntity currentUser) {
+        byte[] image = currentUser.getProfilePicture();
+        if (image == null) {
+            //TODO Add PictureNotFoundException | Global Exception handling
+            throw new RuntimeException("No profile picture found");
+        }
+        return Base64.getEncoder().encodeToString(image);
+
     }
 }
