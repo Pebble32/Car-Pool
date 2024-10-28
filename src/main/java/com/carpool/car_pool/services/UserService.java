@@ -5,16 +5,16 @@ import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -56,15 +56,20 @@ public class UserService {
     }
 
 
-        public void uploadProfilePicture (@NotNull MultipartFile file){
-            UserEntity currentUser = currentUserService.getCurrentUser();
+    /**
+     * Uploads a profile picture for the current user.
+     *
+     * @param file The MultipartFile representing the profile picture.
+     */
+    public void uploadProfilePicture(@NotNull MultipartFile file) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
 
-            String profilePicturePath = fileStorageService
-                    .saveProfilePicture(file, currentUser.getId());
-
-            if (profilePicturePath != null) {
-                currentUser.setProfilePicture(profilePicturePath);
-                userRepository.save(currentUser);
-            }
+        try {
+            currentUser.setProfilePicture(file.getBytes());
+            userRepository.save(currentUser);
+        } catch (IOException e) {
+            // TODO add UploadPictureException | Global exception handling
+            throw new RuntimeException("Failed to upload profile picture", e);
         }
+    }
 }
