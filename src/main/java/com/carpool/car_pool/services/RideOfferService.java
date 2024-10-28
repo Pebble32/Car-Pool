@@ -297,4 +297,37 @@ public class RideOfferService {
 
         //log.info("Deleted {} finished ride offers and their associated ride requests.", rideOffersToDelete.size());
     }
+
+    /**
+     * Marks a ride offer as finished.
+     *
+     * @param id   The ID of the ride offer to mark as finished.
+     * @param user The {@link UserEntity} attempting to mark the ride as finished.
+     * @throws RuntimeException   if the ride offer does not exist.
+     * @throws RuntimeException if the user is not authorized to mark the ride as finished.
+     */
+    @Transactional
+    public void rideFinished(Long id, UserEntity user) {
+        RideOfferEntity rideOffer = rideOfferRepository.findById(id)
+                // TODO add RideOfferNotFoundException | Global exception handler
+                .orElseThrow(() -> new RuntimeException("Ride offer does not exist"));
+
+        if (!rideOffer.getCreator().equals(user)) {
+            //TODO add UnauthorizedActionException |  Global exception handler
+            throw new RuntimeException("Only owner can mark this ride offer as finished");
+        }
+
+        // Update the status to COMPLETED
+        rideOffer.setStatus(RideStatus.FINISHED);
+        rideOfferRepository.save(rideOffer);
+
+        // Optionally, update associated ride requests if needed
+        List<RideRequestsEntity> rideRequests = rideOffer.getRideRequests();
+        for (RideRequestsEntity request : rideRequests) {
+            if (request.getRequestStatus() == RequestStatus.PENDING) {
+                request.setRequestStatus(RequestStatus.REJECTED);
+                rideRequestRepository.save(request);
+            }
+        }
+    }
 }
