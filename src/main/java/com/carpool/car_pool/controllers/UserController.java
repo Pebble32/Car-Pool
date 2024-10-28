@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 
 /**
  * Controller for managing users.
@@ -52,7 +54,7 @@ public class UserController {
      * @param file The profile picture file.
      * @return ResponseEntity with HTTP status.
      */
-    @PostMapping(value = "/profile-picture", consumes = "multipart/form-data")
+    @PostMapping(value = "/profile-picture", consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadProfilePicture(
             @RequestPart("file") MultipartFile file
     ) {
