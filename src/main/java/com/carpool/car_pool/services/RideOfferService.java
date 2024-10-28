@@ -273,15 +273,28 @@ public class RideOfferService {
     }
 
 
+    /**
+     * Scheduled task to delete ride offers that have finished two years ago along with their associated ride requests.
+     * Runs daily at 2 AM.
+     */
     @Scheduled(cron = "0 0 2 * * ?")
     @Transactional
     public void deleteFinishedRide() {
-        // TODO add specification here
-        // Specification should look at rides that are finished two days ago
-        List<RideOfferEntity> rideOffers = rideOfferRepository.findAll();
+        // Cutoff date is two years ago from now
+        LocalDateTime twoYearsAgo = LocalDateTime.now().minusYears(2);
 
-        //TODO delete every ride request in every ride offer that has to be deleted
+        // Specifications to find all ride offers that are finished or cancelled before the cutoff date
+        List<RideOfferEntity> rideOffersToDelete = rideOfferRepository.findAll(
+                RideOfferSpecifications.hasStatus(RideStatus.FINISHED)
+                        .or(RideOfferSpecifications.hasStatus(RideStatus.CANCELLED))
+                        .and(RideOfferSpecifications.isFinishedBefore(twoYearsAgo))
+        );
 
-        // TODO delete each ride offer that finished two days ago
+        //TODO add some logging mechanism here
+
+
+        rideOfferRepository.deleteAll(rideOffersToDelete);
+
+        //log.info("Deleted {} finished ride offers and their associated ride requests.", rideOffersToDelete.size());
     }
 }
