@@ -72,8 +72,8 @@ public class UserController {
 
 
     /**
-     * Get profile-picture of the current user
-     * @return Profile picture as String
+     * Retrieves profile picture
+     * @return ResponseEntity containing a profile picture as a String
      */
     @GetMapping("/profile-picture")
     public ResponseEntity<String> getProfilePicture() {
