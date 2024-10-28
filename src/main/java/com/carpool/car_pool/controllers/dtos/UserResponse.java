@@ -14,7 +14,6 @@ public class UserResponse {
     private String email;
     private String firstName;
     private String lastName;
-    private String profilePicture;
     private String phoneNumber;
     private LocalDate createdDate;
     private LocalDate lastModifiedDate;

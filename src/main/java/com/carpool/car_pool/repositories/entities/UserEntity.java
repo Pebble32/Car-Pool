@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,9 +47,6 @@ public class UserEntity implements Principal {
 
     private String lastname;
 
-    @Column(columnDefinition = "TEXT")
-    private String profilePicture;
-
     private String phoneNumber;
 
     @CreatedDate
@@ -66,6 +64,10 @@ public class UserEntity implements Principal {
     @JsonManagedReference
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RideRequestsEntity> rideRequests;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private ProfilePictureEntity profilePicture;
 
     /**
      * Returns the name of the principal, which is the user's email.
