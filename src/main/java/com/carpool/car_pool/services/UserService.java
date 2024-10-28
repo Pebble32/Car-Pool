@@ -63,7 +63,8 @@ public class UserService {
 
     /**
      * Uploads a profile picture for the current user.
-     *
+     * Resizes if picture is too big
+     * 
      * @param file The MultipartFile representing the profile picture.
      */
     public void uploadProfilePicture(@NotNull MultipartFile file, @NotNull UserEntity user) {
