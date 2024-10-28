@@ -78,11 +78,6 @@ public class UserController {
     @GetMapping("/profile-picture")
     public ResponseEntity<String> getProfilePicture() {
         UserEntity currentUser = currentUserService.getCurrentUser();
-        byte[] image = currentUser.getProfilePicture();
-        if (image == null) {
-            return ResponseEntity.notFound().build();
-        }
-        String encodedImage = Base64.getEncoder().encodeToString(image);
-        return ResponseEntity.ok().body(encodedImage);
+        return ResponseEntity.ok().body(userService.getProfilePicture(currentUser));
     }
 }
