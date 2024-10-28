@@ -55,7 +55,7 @@ public class RideOfferSpecifications {
     }
 
     /**
-     * Specification to search for ride offers by a keyword that can be either the startLocation, endLocation or the creotor
+     * Specification to search for ride offers by a keyword that can be either the startLocation, endLocation or the creator
      * of the ride.
      * @param keyword The keyword being used for the search
      * @return Specification for the keyword

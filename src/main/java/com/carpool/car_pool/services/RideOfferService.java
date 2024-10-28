@@ -90,21 +90,21 @@ public class RideOfferService {
     /**
      * Edits the details of an existing ride offer.
      *
-     * @param editRideofferRequest The {@link EditRideOfferRequest} containing updated ride offer details.
+     * @param editRideOfferRequest The {@link EditRideOfferRequest} containing updated ride offer details.
      * @param user                 The {@link UserEntity} attempting to edit the ride offer.
      * @return The updated {@link RideOfferResponse}.
      * @throws RuntimeException if the ride offer does not exist or the user is not authorized to edit it.
      */
-    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideofferRequest, UserEntity user) {
-        RideOfferEntity ride = rideOfferRepository.findById(editRideofferRequest.getRideId())
+    public RideOfferResponse editRideOfferDetail(EditRideOfferRequest editRideOfferRequest, UserEntity user) {
+        RideOfferEntity ride = rideOfferRepository.findById(editRideOfferRequest.getRideId())
                 .orElseThrow(() -> new RuntimeException("Ride offer does not exist"));
 
         if (!ride.getCreator().equals(user)) {
             throw new RuntimeException("Only owner can edit ride offer");
         }
 
-        if (!editRideofferRequest.getRideStatus().equals(ride.getStatus().toString())) {
-            if (editRideofferRequest.getRideStatus().equals(RideStatus.CANCELLED.toString())) {
+        if (!editRideOfferRequest.getRideStatus().equals(ride.getStatus().toString())) {
+            if (editRideOfferRequest.getRideStatus().equals(RideStatus.CANCELLED.toString())) {
                 ride.setStatus(RideStatus.CANCELLED);
                 List<RideRequestsEntity> requests = ride.getRideRequests();
                 for (RideRequestsEntity request : requests) {
@@ -112,22 +112,22 @@ public class RideOfferService {
                     rideRequestRepository.save(request);
                 }
             }
-            ride.setStatus(RideStatus.valueOf(editRideofferRequest.getRideStatus()));
+            ride.setStatus(RideStatus.valueOf(editRideOfferRequest.getRideStatus()));
         }
 
-        if (!editRideofferRequest.getStartLocation().equals(ride.getStartLocation())) {
-            ride.setStartLocation(editRideofferRequest.getStartLocation());
+        if (!editRideOfferRequest.getStartLocation().equals(ride.getStartLocation())) {
+            ride.setStartLocation(editRideOfferRequest.getStartLocation());
         }
-        if (!editRideofferRequest.getEndLocation().equals(ride.getEndLocation())) {
-            ride.setEndLocation(editRideofferRequest.getEndLocation());
-        }
-
-        if (!editRideofferRequest.getDepartureTime().equals(ride.getDepartureTime())) {
-            ride.setDepartureTime(editRideofferRequest.getDepartureTime());
+        if (!editRideOfferRequest.getEndLocation().equals(ride.getEndLocation())) {
+            ride.setEndLocation(editRideOfferRequest.getEndLocation());
         }
 
-        if (!editRideofferRequest.getAvailableSeats().equals(ride.getAvailableSeats())) {
-            ride.setAvailableSeats(editRideofferRequest.getAvailableSeats());
+        if (!editRideOfferRequest.getDepartureTime().equals(ride.getDepartureTime())) {
+            ride.setDepartureTime(editRideOfferRequest.getDepartureTime());
+        }
+
+        if (!editRideOfferRequest.getAvailableSeats().equals(ride.getAvailableSeats())) {
+            ride.setAvailableSeats(editRideOfferRequest.getAvailableSeats());
         }
 
         RideOfferEntity updatedRide = rideOfferRepository.save(ride);
@@ -228,7 +228,7 @@ public class RideOfferService {
         );
     }
 
-    
+
     /**
      * Deletes a ride offer.
      *
