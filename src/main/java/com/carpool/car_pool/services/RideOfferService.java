@@ -330,4 +330,32 @@ public class RideOfferService {
             }
         }
     }
+
+    /**
+     * Scheduled task to automatically mark rides as finished the day after their departure.
+     * Runs daily at 1 AM.
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+    @Transactional
+    public void autoMarkRidesAsFinished() {
+        // Define the cutoff date as one day ago from now
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+
+        // Use specifications to find all ride offers that departed yesterday and are not yet finished
+        List<RideOfferEntity> ridesToMarkFinished = rideOfferRepository.findAll(
+                RideOfferSpecifications.hasStatus(RideStatus.ONGOING)
+                        .and(RideOfferSpecifications.isFinishedBefore(yesterday))
+        );
+
+        if (ridesToMarkFinished.isEmpty()) {
+            log.info("No rides found to mark as finished.");
+            return;
+        }
+
+        for (RideOfferEntity rideOffer : ridesToMarkFinished) {
+            // Mark each ride as finished
+            rideFinished(rideOffer.getId(), rideOffer.getCreator());
+        }
+
+    }
 }
