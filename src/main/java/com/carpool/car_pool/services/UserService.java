@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,8 +24,6 @@ import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 /**
  * Service for users.
  */
@@ -35,8 +32,6 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-    private final FileStorageService fileStorageService;
-    private final CurrentUserService currentUserService;
 
     /**
      * Retrieves paginated list of all users.
