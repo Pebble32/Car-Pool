@@ -6,6 +6,8 @@ import com.carpool.car_pool.repositories.entities.UserEntity;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Base64;
 /**
  * Converter for mapping between {@link RegisterRequest} and {@link UserEntity}.
  */
@@ -25,7 +27,7 @@ public class UserConverter {
                 .firstname(registerRequest.getFirstname())
                 .lastname(registerRequest.getLastname())
                 .phoneNumber(registerRequest.getPhoneNumber())
-                .profilePicture(registerRequest.getProfilePicture())
+                .profilePicture(registerRequest.getProfilePicture() != null ? Base64.getDecoder().decode(registerRequest.getProfilePicture()) : null)
                 .build();
     }
 
@@ -41,7 +43,7 @@ public class UserConverter {
                 .email(userEntity.getEmail())
                 .firstName(userEntity.getFirstname())
                 .lastName(userEntity.getLastname())
-                .profilePicture(userEntity.getProfilePicture())
+                .profilePicture(userEntity.getProfilePicture() != null ? Base64.getEncoder().encodeToString(userEntity.getProfilePicture()) : null)
                 .phoneNumber(userEntity.getPhoneNumber())
                 .createdDate(userEntity.getCreatedDate())
                 .lastModifiedDate(userEntity.getLastModifiedDate())
