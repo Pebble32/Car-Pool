@@ -171,7 +171,7 @@ public class RideOfferController {
     public ResponseEntity<PageResponse<RideOfferResponse>> searchForRides(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
-            @RequestParam(name = "keyword", required = true) String keyword
+            @RequestParam(name = "keyword") String keyword
     ) {
         return ResponseEntity.ok(rideOfferService.searchForRides(keyword, page, size));
     }

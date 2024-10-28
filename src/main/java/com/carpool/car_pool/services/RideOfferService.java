@@ -185,22 +185,7 @@ public class RideOfferService {
             spec = spec.and(RideOfferSpecifications.hasDepartureTime(departureTime));
         }
 
-        Page<RideOfferEntity> rideOfferPage = rideOfferRepository.findAll(spec, pageable);
-
-        List<RideOfferResponse> rideOffers = rideOfferPage
-                .stream()
-                .map(rideOfferConverter::entityToDTO)
-                .collect(Collectors.toList());
-
-        return new PageResponse<>(
-                rideOffers,
-                rideOfferPage.getNumber(),
-                rideOfferPage.getSize(),
-                rideOfferPage.getTotalElements(),
-                rideOfferPage.getTotalPages(),
-                rideOfferPage.isFirst(),
-                rideOfferPage.isLast()
-        );
+        return getRideOfferResponsePageResponse(pageable, spec);
 
     }
 
@@ -216,6 +201,16 @@ public class RideOfferService {
 
         Specification<RideOfferEntity> spec = Specification.where(RideOfferSpecifications.containsKeyword(keyword));
 
+        return getRideOfferResponsePageResponse(pageable, spec);
+    }
+
+    /**
+     * Helper function to reduce duplicate code
+     * @param pageable PageRequest
+     * @param spec Specifications
+     * @return PageResponse
+     */
+    private PageResponse<RideOfferResponse> getRideOfferResponsePageResponse(Pageable pageable, Specification<RideOfferEntity> spec) {
         Page<RideOfferEntity> rideOfferPage = rideOfferRepository.findAll(spec, pageable);
 
         List<RideOfferResponse> rideOffers = rideOfferPage.stream()
@@ -233,6 +228,7 @@ public class RideOfferService {
         );
     }
 
+    
     /**
      * Deletes a ride offer.
      *
