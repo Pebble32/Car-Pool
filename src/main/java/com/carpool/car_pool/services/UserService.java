@@ -15,9 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 /**
  * Service for users.
@@ -63,17 +71,37 @@ public class UserService {
      *
      * @param file The MultipartFile representing the profile picture.
      */
-    public void uploadProfilePicture(@NotNull MultipartFile file) {
-        UserEntity currentUser = currentUserService.getCurrentUser();
-
+    public void uploadProfilePicture(@NotNull MultipartFile file, @NotNull UserEntity user) {
         try {
-            currentUser.setProfilePicture(file.getBytes());
-            userRepository.save(currentUser);
+            // Step 1: Read the image as a BufferedImage
+            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+            BufferedImage originalImage = ImageIO.read(inputStream);
+
+            // Step 2: Resize the image (e.g., to 200x200)
+            int targetWidth = 200;
+            int targetHeight = 200;
+            BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, originalImage.getType());
+
+            Graphics2D graphics2D = resizedImage.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+            graphics2D.dispose();
+
+            // Step 3: Convert the BufferedImage back to byte[]
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, "jpeg", byteArrayOutputStream);
+            byte[] downsampledImageBytes = byteArrayOutputStream.toByteArray();
+
+            // Step 4: Save the downsampled image in the database
+            user.setProfilePicture(downsampledImageBytes);
+            userRepository.save(user);
+
         } catch (IOException e) {
-            // TODO add UploadPictureException | Global exception handling
-            throw new RuntimeException("Failed to upload profile picture", e);
+            
+            throw new RuntimeException("Failed to upload profile picture");
         }
     }
+
 
 
     /**
