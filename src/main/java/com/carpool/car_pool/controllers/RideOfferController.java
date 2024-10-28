@@ -129,6 +129,17 @@ public class RideOfferController {
         return ResponseEntity.ok(rideOfferService.getAllProviders());
     }
 
+
+    /**
+     * Deletes rides that are finished
+     * @return ResponseEntity ok on successful deletion
+     */
+    @DeleteMapping("/delete-finished")
+    public ResponseEntity<Void> deleteRideOfferFinished() {
+        rideOfferService.deleteFinishedRide();
+        return ResponseEntity.ok().build();
+    }
+
     /**
      * Searches for ride offers based on the provided parameters.
      * @param page The page number (zero-based).
@@ -160,8 +171,22 @@ public class RideOfferController {
     public ResponseEntity<PageResponse<RideOfferResponse>> searchForRides(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
-            @RequestParam(name = "keyword", required = true) String keyword
+            @RequestParam(name = "keyword") String keyword
     ) {
         return ResponseEntity.ok(rideOfferService.searchForRides(keyword, page, size));
+    }
+
+
+    /**
+     * Endpoint to manually mark a ride offer as finished.
+     *
+     * @param id The ID of the ride offer to mark as finished.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/mark-finished/{id}")
+    public ResponseEntity<String> markRideAsFinished(@PathVariable Long id) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        rideOfferService.rideFinished(id, currentUser);
+        return ResponseEntity.ok().build();
     }
 }
