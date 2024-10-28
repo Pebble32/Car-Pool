@@ -176,4 +176,18 @@ public class RideOfferController {
     ) {
         return ResponseEntity.ok(rideOfferService.searchForRides(keyword, page, size));
     }
+
+
+    /**
+     * Endpoint to manually mark a ride offer as finished.
+     *
+     * @param id The ID of the ride offer to mark as finished.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/mark-finished/{id}")
+    public ResponseEntity<String> markRideAsFinished(@PathVariable Long id) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        rideOfferService.rideFinished(id, currentUser);
+        return ResponseEntity.ok("Ride offer marked as finished successfully.");
+    }
 }

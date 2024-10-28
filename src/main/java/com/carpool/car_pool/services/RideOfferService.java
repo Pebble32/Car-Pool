@@ -346,10 +346,10 @@ public class RideOfferService {
                         .and(RideOfferSpecifications.isFinishedBefore(yesterday))
         );
 
-        // TODO add some logging here
+        // TODO add some logging here in case no ride was found
 
+        // Mark each ride as finished
         for (RideOfferEntity rideOffer : ridesToMarkFinished) {
-            // Mark each ride as finished
             rideFinished(rideOffer.getId(), rideOffer.getCreator());
         }
 
