@@ -46,7 +46,8 @@ public class UserEntity implements Principal {
 
     private String lastname;
 
-    private byte[] profilePicture;
+    @Column(columnDefinition = "TEXT")
+    private String profilePicture;
 
     private String phoneNumber;
 
