@@ -73,11 +73,11 @@ public class UserService {
      */
     public void uploadProfilePicture(@NotNull MultipartFile file, @NotNull UserEntity user) {
         try {
-            // Step 1: Read the image as a BufferedImage
+            // read the image as a BufferedImage
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             BufferedImage originalImage = ImageIO.read(inputStream);
 
-            // Step 2: Resize the image (e.g., to 200x200)
+            // resize the image to 200x200 (might need to change later)
             int targetWidth = 200;
             int targetHeight = 200;
             BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, originalImage.getType());
@@ -87,17 +87,17 @@ public class UserService {
             graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
             graphics2D.dispose();
 
-            // Step 3: Convert the BufferedImage back to byte[]
+            // convert the BufferedImage back to byte[]
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(resizedImage, "jpeg", byteArrayOutputStream);
             byte[] downsampledImageBytes = byteArrayOutputStream.toByteArray();
 
-            // Step 4: Save the downsampled image in the database
+            // save the downsampled image
             user.setProfilePicture(downsampledImageBytes);
             userRepository.save(user);
 
         } catch (IOException e) {
-            
+            //TODO FailedFileUploadException | Global exception handling
             throw new RuntimeException("Failed to upload profile picture");
         }
     }
