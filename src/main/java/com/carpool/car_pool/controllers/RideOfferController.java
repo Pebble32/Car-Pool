@@ -136,7 +136,6 @@ public class RideOfferController {
      */
     @DeleteMapping("/delete-finished")
     public ResponseEntity<Void> deleteRideOfferFinished() {
-        UserEntity currentUser = currentUserService.getCurrentUser();
         rideOfferService.deleteFinishedRide();
         return ResponseEntity.ok().build();
     }
@@ -188,6 +187,6 @@ public class RideOfferController {
     public ResponseEntity<String> markRideAsFinished(@PathVariable Long id) {
         UserEntity currentUser = currentUserService.getCurrentUser();
         rideOfferService.rideFinished(id, currentUser);
-        return ResponseEntity.ok("Ride offer marked as finished successfully.");
+        return ResponseEntity.ok().build();
     }
 }
