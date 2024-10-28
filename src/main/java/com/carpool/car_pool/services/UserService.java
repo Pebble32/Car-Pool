@@ -75,6 +75,12 @@ public class UserService {
         }
     }
 
+
+    /**
+     * Gets base64 image and turns it into string
+     * @param currentUser logged in
+     * @return Base64 image as a String
+     */
     public String getProfilePicture(UserEntity currentUser) {
         byte[] image = currentUser.getProfilePicture();
         if (image == null) {
@@ -82,6 +88,5 @@ public class UserService {
             throw new RuntimeException("No profile picture found");
         }
         return Base64.getEncoder().encodeToString(image);
-
     }
 }
