@@ -60,28 +60,27 @@ public class UserService {
         );
     }
 
-
     /**
      * Uploads a profile picture for the current user.
-     * Resizes if picture is too big
-     * 
+     * Resizes if picture is too big.
+     *
      * @param file The MultipartFile representing the profile picture.
+     * @param user The user entity to associate the profile picture with.
      */
     public void uploadProfilePicture(@NotNull MultipartFile file, @NotNull UserEntity user) {
         try {
-            // read the image as a BufferedImage
+            // Read the image as a BufferedImage
             InputStream inputStream = new ByteArrayInputStream(file.getBytes());
             BufferedImage originalImage = ImageIO.read(inputStream);
 
-            // determine if resizing is necessary
+            // check if resizing is necessary
             int originalWidth = originalImage.getWidth();
             int originalHeight = originalImage.getHeight();
-            //Might need to change later w/h
             int targetWidth = 200;
             int targetHeight = 200;
 
             if (originalWidth > targetWidth || originalHeight > targetHeight) {
-                // aspect ratio to maintain proportions
+                // Aspect ratio to maintain proportions
                 double widthRatio = (double) targetWidth / originalWidth;
                 double heightRatio = (double) targetHeight / originalHeight;
                 double scaleRatio = Math.min(widthRatio, heightRatio);
@@ -89,43 +88,44 @@ public class UserService {
                 int newWidth = (int) (originalWidth * scaleRatio);
                 int newHeight = (int) (originalHeight * scaleRatio);
 
-                // resize the image while maintaining aspect ratio
+                // Resize the image while with aspect ratio
                 BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
                 Graphics2D graphics2D = resizedImage.createGraphics();
                 graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 graphics2D.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
                 graphics2D.dispose();
 
-                // convert the resized BufferedImage back to byte[]
+                // resized BufferedImage to Base64 string
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ImageIO.write(resizedImage, "jpeg", byteArrayOutputStream);
                 byte[] downsampledImageBytes = byteArrayOutputStream.toByteArray();
+                String base64ProfilePicture = Base64.getEncoder().encodeToString(downsampledImageBytes);
 
-                user.setProfilePicture(downsampledImageBytes);
+                user.setProfilePicture(base64ProfilePicture);
             } else {
-                user.setProfilePicture(file.getBytes());
+                String base64ProfilePicture = Base64.getEncoder().encodeToString(file.getBytes());
+                user.setProfilePicture(base64ProfilePicture);
             }
 
             userRepository.save(user);
         } catch (IOException e) {
-            //TODO FailedFileUploadException | Global exception handling
-            throw new RuntimeException("Failed to upload profile picture");
+            //TODO: Add FailedFileUploadException | Global exception handling
+            throw new RuntimeException("Failed to upload profile picture", e);
         }
     }
 
-
-
     /**
-     * Gets base64 image and turns it into string
-     * @param currentUser logged in
-     * @return Base64 image as a String
+     * Gets base64 image and returns it as a String.
+     *
+     * @param currentUser The current logged-in user.
+     * @return Base64 image as a String.
      */
     public String getProfilePicture(UserEntity currentUser) {
-        byte[] image = currentUser.getProfilePicture();
+        String image = currentUser.getProfilePicture();
         if (image == null) {
-            //TODO Add PictureNotFoundException | Global Exception handling
+            //TODO: Add PictureNotFoundException | Global exception handling
             throw new RuntimeException("No profile picture found");
         }
-        return Base64.getEncoder().encodeToString(image);
+        return image;
     }
 }
