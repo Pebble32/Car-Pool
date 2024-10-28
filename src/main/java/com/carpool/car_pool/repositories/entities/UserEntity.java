@@ -46,7 +46,7 @@ public class UserEntity implements Principal {
 
     private String lastname;
 
-    private String profilePicture;
+    private byte[] profilePicture;
 
     private String phoneNumber;
 
