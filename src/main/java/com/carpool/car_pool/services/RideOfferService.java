@@ -317,11 +317,9 @@ public class RideOfferService {
             throw new RuntimeException("Only owner can mark this ride offer as finished");
         }
 
-        // Update the status to COMPLETED
         rideOffer.setStatus(RideStatus.FINISHED);
         rideOfferRepository.save(rideOffer);
 
-        // Optionally, update associated ride requests if needed
         List<RideRequestsEntity> rideRequests = rideOffer.getRideRequests();
         for (RideRequestsEntity request : rideRequests) {
             if (request.getRequestStatus() == RequestStatus.PENDING) {
@@ -338,19 +336,17 @@ public class RideOfferService {
     @Scheduled(cron = "0 0 1 * * ?")
     @Transactional
     public void autoMarkRidesAsFinished() {
-        // Define the cutoff date as one day ago from now
+        // cutoff date is one day ago from now
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
 
-        // Use specifications to find all ride offers that departed yesterday and are not yet finished
+        // specifications to find all ride offers that departed yesterday and are not marked finished yet
         List<RideOfferEntity> ridesToMarkFinished = rideOfferRepository.findAll(
-                RideOfferSpecifications.hasStatus(RideStatus.ONGOING)
+                RideOfferSpecifications.hasStatus(RideStatus.AVAILABLE)
+                        .or(RideOfferSpecifications.hasStatus(RideStatus.UNAVAILABLE))
                         .and(RideOfferSpecifications.isFinishedBefore(yesterday))
         );
 
-        if (ridesToMarkFinished.isEmpty()) {
-            log.info("No rides found to mark as finished.");
-            return;
-        }
+        // TODO add some logging here
 
         for (RideOfferEntity rideOffer : ridesToMarkFinished) {
             // Mark each ride as finished
