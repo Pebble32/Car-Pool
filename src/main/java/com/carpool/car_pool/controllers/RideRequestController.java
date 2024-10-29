@@ -145,6 +145,12 @@ public class RideRequestController {
     }
 
 
+    /**
+     * Allows the requester to edit their ride request.
+     *
+     * @param request The request containing the ride request ID and the new status.
+     * @return ResponseEntity containing the updated {@link RideRequestResponse}.
+     */
     @PutMapping("/edit")
     public ResponseEntity<RideRequestResponse> editRideRequest(
             @RequestBody @Valid EditRideRequestRequest request

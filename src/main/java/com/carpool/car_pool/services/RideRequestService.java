@@ -273,5 +273,41 @@ public class RideRequestService {
         rideRequestRepository.delete(rideRequest);
     }
 
+    /**
+     * Allows the requester to edit their ride request.
+     *
+     * @param request The {@link EditRideRequestRequest} containing the ride request ID and new status.
+     * @param currentUser The {@link UserEntity} making the edit.
+     * @return The updated {@link RideRequestResponse}.
+     * @throws RuntimeException if the ride request cannot be edited.
+     */
+    @Transactional
+    public RideRequestResponse editRideRequest(EditRideRequestRequest request, UserEntity currentUser) {
 
+        RideRequestsEntity rideRequest = rideRequestRepository.findById(request.getRideRequestId())
+                .orElseThrow(() -> new RuntimeException("Ride request not found"));
+
+        if(!rideRequest.getRequester().equals(currentUser)){
+            throw new RuntimeException("You are not authorized to edit this ride request");
+        }
+
+        if(request.getRequestStatus() == RequestStatus.CANCELED){
+            rideRequest.setRequestStatus(RequestStatus.CANCELED);
+
+            RideOfferEntity rideOffer = rideRequest.getRideOffer();
+
+            rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
+
+            if(rideOffer.getStatus() == RideStatus.UNAVAILABLE && rideOffer.getAvailableSeats() > 0){
+                rideOffer.setStatus(RideStatus.AVAILABLE);
+            }
+
+            rideOfferRepository.save(rideOffer);
+            rideRequestRepository.save(rideRequest);
+        } else {
+            throw new RuntimeException("Invalid request status. You can only cancel your ride request.");
+        }
+
+        return rideRequestConverter.entityToDTO(rideRequest);
+    }
 }
