@@ -1,6 +1,7 @@
 package com.carpool.car_pool.services;
 
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
@@ -271,4 +272,6 @@ public class RideRequestService {
 
         rideRequestRepository.delete(rideRequest);
     }
+
+
 }
