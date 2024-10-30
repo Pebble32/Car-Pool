@@ -2,6 +2,8 @@ package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.UserEntity;
+import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
+
 /**
  * Controller for managing users.
  * Controller for user-related operations.
@@ -25,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final CurrentUserService currentUserService;
 
     /**
      * Retrieves all users.
@@ -48,11 +54,23 @@ public class UserController {
      * @param file The profile picture file.
      * @return ResponseEntity with HTTP status.
      */
-    @PostMapping(value = "/profile-picture", consumes = "multipart/form-data")
+    @PostMapping(value = "/profile-picture", consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadProfilePicture(
             @RequestPart("file") MultipartFile file
     ) {
-        userService.uploadProfilePicture(file);
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.uploadProfilePicture(file, currentUser);
         return ResponseEntity.accepted().build();
+    }
+
+
+    /**
+     * Retrieves profile picture
+     * @return ResponseEntity containing a profile picture as a String
+     */
+    @GetMapping("/profile-picture")
+    public ResponseEntity<String> getProfilePicture() {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok().body(userService.getProfilePicture(currentUser));
     }
 }

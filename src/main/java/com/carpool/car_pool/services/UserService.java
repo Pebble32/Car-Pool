@@ -3,18 +3,27 @@ package com.carpool.car_pool.services;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.ProfilePictureEntity;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import jakarta.validation.constraints.NotNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -25,8 +34,6 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-    private final FileStorageService fileStorageService;
-    private final CurrentUserService currentUserService;
 
     /**
      * Retrieves paginated list of all users.
@@ -55,16 +62,89 @@ public class UserService {
         );
     }
 
+    /**
+     * Uploads a profile picture for the current user.
+     * Resizes if picture is too big.
+     *
+     * @param file The MultipartFile representing the profile picture.
+     * @param user The user entity to associate the profile picture with.
+     */
+    @Transactional
+    public void uploadProfilePicture(@NotNull MultipartFile file, @NotNull UserEntity user) {
+        try {
+            // image as a BufferedImage
+            InputStream inputStream = new ByteArrayInputStream(file.getBytes());
+            BufferedImage originalImage = ImageIO.read(inputStream);
 
-    public void uploadProfilePicture (@NotNull MultipartFile file){
-        UserEntity currentUser = currentUserService.getCurrentUser();
+            if (originalImage == null) {
+                throw new RuntimeException("Invalid image file");
+            }
 
-        String profilePicturePath = fileStorageService
-                .saveProfilePicture(file, currentUser.getId());
+            // check if resizing is necessary
+            int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
+            int targetWidth = 200;
+            int targetHeight = 200;
 
-        if (profilePicturePath != null) {
-            currentUser.setProfilePicture(profilePicturePath);
-            userRepository.save(currentUser);
+            String base64ProfilePicture;
+
+            if (originalWidth > targetWidth || originalHeight > targetHeight) {
+                // Aspect ratio calc
+                double widthRatio = (double) targetWidth / originalWidth;
+                double heightRatio = (double) targetHeight / originalHeight;
+                double scaleRatio = Math.min(widthRatio, heightRatio);
+
+                int newWidth = (int) (originalWidth * scaleRatio);
+                int newHeight = (int) (originalHeight * scaleRatio);
+
+                // resize the image w.r.t. aspect ratio
+                BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+                Graphics2D graphics2D = resizedImage.createGraphics();
+                graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                graphics2D.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+                graphics2D.dispose();
+
+                // BufferedImage to Base64 string
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ImageIO.write(resizedImage, "jpeg", byteArrayOutputStream);
+                byte[] downsampledImageBytes = byteArrayOutputStream.toByteArray();
+                base64ProfilePicture = Base64.getEncoder().encodeToString(downsampledImageBytes);
+            } else {
+                base64ProfilePicture = Base64.getEncoder().encodeToString(file.getBytes());
+            }
+
+            // if the user already has profile picture
+            ProfilePictureEntity existingProfilePicture = user.getProfilePicture();
+            if (existingProfilePicture != null) {
+                existingProfilePicture.setBase64Image(base64ProfilePicture);
+            } else {
+                ProfilePictureEntity newProfilePicture = ProfilePictureEntity.builder()
+                        .base64Image(base64ProfilePicture)
+                        .user(user)
+                        .build();
+                user.setProfilePicture(newProfilePicture);
+            }
+
+            userRepository.save(user);
+        } catch (IOException e) {
+            // TODO: Add proper exception handling
+            throw new RuntimeException("Failed to upload profile picture", e);
         }
+    }
+
+    /**
+     * Gets base64 image and returns it as a String.
+     *
+     * @param currentUser The current logged-in user.
+     * @return Base64 image as a String.
+     */
+    @Transactional
+    public String getProfilePicture(UserEntity currentUser) {
+        ProfilePictureEntity profilePicture = currentUser.getProfilePicture();
+        if (profilePicture == null || profilePicture.getBase64Image() == null || profilePicture.getBase64Image().isEmpty()) {
+            // TODO: Add PictureNotFoundException | Global exception handling
+            throw new RuntimeException("No profile picture found");
+        }
+        return profilePicture.getBase64Image();
     }
 }

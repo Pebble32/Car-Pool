@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    database: postgresql
+        enable_lazy_load_no_trans=true:database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   servlet:
     multipart:
