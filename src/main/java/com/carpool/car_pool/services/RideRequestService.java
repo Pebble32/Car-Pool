@@ -1,9 +1,6 @@
 package com.carpool.car_pool.services;
 
-import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
-import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
-import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
-import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
+import com.carpool.car_pool.controllers.dtos.*;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
@@ -291,22 +288,48 @@ public class RideRequestService {
             throw new RuntimeException("You are not authorized to edit this ride request");
         }
 
-        if(request.getRequestStatus() == RequestStatus.CANCELED){
-            rideRequest.setRequestStatus(RequestStatus.CANCELED);
+        RideOfferEntity rideOffer = rideRequest.getRideOffer();
 
-            RideOfferEntity rideOffer = rideRequest.getRideOffer();
-
-            rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
-
-            if(rideOffer.getStatus() == RideStatus.UNAVAILABLE && rideOffer.getAvailableSeats() > 0){
-                rideOffer.setStatus(RideStatus.AVAILABLE);
-            }
-
-            rideOfferRepository.save(rideOffer);
-            rideRequestRepository.save(rideRequest);
-        } else {
-            throw new RuntimeException("Invalid request status. You can only cancel your ride request.");
+        if (rideOffer.getStatus() != RideStatus.AVAILABLE){
+            throw new RuntimeException("Cannot edit ride request as the ride offer is no longer available");
         }
+
+        RequestStatus currentStatus = rideRequest.getRequestStatus();
+        RequestStatus newStatus = request.getRequestStatus();
+
+        if(currentStatus == RequestStatus.PENDING){
+            if(newStatus == RequestStatus.CANCELED){
+                rideRequest.setRequestStatus(RequestStatus.CANCELED);
+                rideOffer.setAvailableSeats(rideOffer.getAvailableSeats()+1);
+
+                if(rideOffer.getStatus() == RideStatus.UNAVAILABLE && rideOffer.getAvailableSeats() > 0){
+                    rideOffer.setStatus(RideStatus.AVAILABLE);
+                }
+            } else {
+                throw new RuntimeException("Invalid status change. From PENDING, you can only cancel the request");
+            }
+        } else if (currentStatus==RequestStatus.CANCELED){
+            if(newStatus == RequestStatus.PENDING){
+
+                if(rideOffer.getAvailableSeats() <= 0){
+                    throw new RuntimeException("No available seats to uncancel this ride request");
+                }
+
+                rideRequest.setRequestStatus(RequestStatus.PENDING);
+                rideOffer.setAvailableSeats(rideOffer.getAvailableSeats()-1);
+
+                if (rideOffer.getAvailableSeats() == 0){
+                    rideOffer.setStatus(RideStatus.UNAVAILABLE);
+                }
+            } else{
+                throw new RuntimeException("Invalid status change. From CANCELED, you can only change to PENDING.");
+            }
+        } else{
+            throw new RuntimeException("Only requests in PENDING or CANCELED status can be edited by the requester.");
+        }
+
+        rideOfferRepository.save(rideOffer);
+        rideRequestRepository.save(rideRequest);
 
         return rideRequestConverter.entityToDTO(rideRequest);
     }
