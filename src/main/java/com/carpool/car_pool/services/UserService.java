@@ -3,6 +3,7 @@ package com.carpool.car_pool.services;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.ProfilePictureEntity;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
