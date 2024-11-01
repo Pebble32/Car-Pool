@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -44,7 +45,8 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendRideRequestNotificationEmail(UserEntity receiver, RideRequestsEntity rideRequest) throws MessagingException {
+    @Async
+    public void sendRideRequestNotificationEmail(UserEntity receiver, RideRequestsEntity rideRequest) {
         Context context = new Context();
         context.setVariable("name", receiver.getFirstname());
         context.setVariable("requestersFullName", rideRequest.getRequester().getFullName());
@@ -60,7 +62,11 @@ public class EmailService {
                 + " asked for a ride to "
                 + rideRequest.getRideOffer().getEndLocation();
 
-        sendHtmlEmail(receiver.getEmail(), subject, context, RIDE_REQUEST);
+        try {
+            sendHtmlEmail(receiver.getEmail(), subject, context, RIDE_REQUEST);
+        } catch (MessagingException e) {
+            System.out.println("Sending email failed: " + e.getMessage());
+        }
     }
 
     /**

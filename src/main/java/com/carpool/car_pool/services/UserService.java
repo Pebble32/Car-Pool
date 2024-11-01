@@ -6,7 +6,6 @@ import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
-import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -81,11 +80,7 @@ public class UserService {
     }
 
     public void sendRideRequestNotification(UserEntity receiver, RideRequestsEntity rideRequest) {
-        try {
-            emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
-        } catch (MessagingException e) {
-            System.out.println("Sending email failed: " + e.getMessage());
-        }
+        emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
         // TODO: Sends email and pop up notification
     }
 }
