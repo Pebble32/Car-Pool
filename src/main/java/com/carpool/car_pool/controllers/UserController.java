@@ -53,6 +53,12 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Changes the profile picture of the current user.
+     *
+     * @param file The new profile picture file to upload.
+     * @return ResponseEntity with HTTP status.
+     */
     @PutMapping(value="/profile-picture", consumes = "multipart/form-data")
     public ResponseEntity<?> changeProfilePicture(
             @RequestPart("file") MultipartFile file

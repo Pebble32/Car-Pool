@@ -56,6 +56,13 @@ public class UserService {
     }
 
 
+    /**
+     * Uploads or changes the profile picture of the current user.
+     * If the user already has a profile picture, it will be replaced with the new one.
+     *
+     * @param file The new profile picture file to upload. Must be a valid image file.
+     * @throws RuntimeException if the file upload fails.
+     */
     public void uploadProfilePicture (@NotNull MultipartFile file){
         UserEntity currentUser = currentUserService.getCurrentUser();
 
