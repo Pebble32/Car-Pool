@@ -59,6 +59,10 @@ public class UserService {
     public void uploadProfilePicture (@NotNull MultipartFile file){
         UserEntity currentUser = currentUserService.getCurrentUser();
 
+        if(currentUser.getProfilePicture() != null && !currentUser.getProfilePicture().isEmpty()){
+            fileStorageService.deleteProfiePicture(currentUser.getProfilePicture());
+        }
+
         String profilePicturePath = fileStorageService
                 .saveProfilePicture(file, currentUser.getId());
 

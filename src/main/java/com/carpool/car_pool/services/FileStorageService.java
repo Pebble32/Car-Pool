@@ -86,4 +86,16 @@ public class FileStorageService {
         List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png");
         return allowedExtensions.contains(fileExtension.toLowerCase());
     }
+
+    public void deleteProfiePicture(String profilePicturePath) {
+        String fullPath = fileUploadPath+ File.separator + profilePicturePath;
+        Path path = Paths.get(fullPath);
+
+        try{
+           Files.deleteIfExists(path);
+           log.info("Deleted old profile picture");
+        } catch (IOException e){
+            log.error("Could not delete old profile picture", e);
+        }
+    }
 }
