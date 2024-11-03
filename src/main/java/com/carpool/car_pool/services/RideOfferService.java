@@ -28,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -268,6 +270,20 @@ public class RideOfferService {
                 .values());
     }
 
+    /**
+     * Retrieves the ride offer history of a user.
+     *
+     * @param user The {@link UserEntity} to retrieve the ride offer history for.
+     * @return A list of {@link RideOfferResponse} representing the ride offer history.
+     */
+    public List<RideOfferResponse> getRideOfferHistory(UserEntity user) {
+        Optional<List<RideOfferEntity>> rideOfferEntities = rideOfferRepository.findByCreator(user);
+        return rideOfferEntities
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(rideOfferConverter::entityToDTO)
+                .toList();
+    }
 
     /**
      * Scheduled task to delete ride offers that have finished two years ago along with their associated ride requests.
