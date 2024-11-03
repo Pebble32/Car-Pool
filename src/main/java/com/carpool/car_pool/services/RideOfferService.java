@@ -168,11 +168,12 @@ public class RideOfferService {
      * @param startLocation The starting location of the ride.
      * @param endLocation The destination of the ride.
      * @param departureTime The departure time of the ride.
+     * @param status The status of the ride.
      * @param page The page number (zero-based).
      * @param size The size of the page.
      * @return A {@link PageResponse} containing ride offers.
      */
-    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, int page, int size) {
+    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, RideStatus status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
 
         Specification<RideOfferEntity> spec = Specification.where(null);
@@ -185,6 +186,9 @@ public class RideOfferService {
         }
         if (departureTime != null) {
             spec = spec.and(RideOfferSpecifications.hasDepartureTime(departureTime));
+        }
+        if (status != null) {
+            spec = spec.and(RideOfferSpecifications.hasStatus(status));
         }
 
         return getRideOfferResponsePageResponse(pageable, spec);
