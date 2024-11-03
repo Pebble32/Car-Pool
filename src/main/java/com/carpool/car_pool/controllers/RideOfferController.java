@@ -189,4 +189,14 @@ public class RideOfferController {
         rideOfferService.rideFinished(id, currentUser);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * Retrieves the ride history of the current user.
+     * @return ResponseEntity containing a list of {@link RideOfferResponse}.
+     */
+    @GetMapping("/user-rideHistory")
+    public ResponseEntity<List<RideOfferResponse>> getRideHistory() {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok(rideOfferService.getRideOfferHistory(currentUser));
+    }
 }
