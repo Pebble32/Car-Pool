@@ -1,6 +1,10 @@
 package com.carpool.car_pool.services;
 
-import com.carpool.car_pool.controllers.dtos.*;
+
+import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
 import com.carpool.car_pool.repositories.RideRequestRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
