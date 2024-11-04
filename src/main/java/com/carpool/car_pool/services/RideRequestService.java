@@ -119,6 +119,7 @@ public class RideRequestService {
      * @return The updated {@link RideRequestResponse}.
      * @throws RuntimeException if the ride request is invalid or the user is not authorized.
      */
+    @Transactional
     public RideRequestResponse answerRideRequest(@Valid AnswerRideRequestRequest request, UserEntity currentUser) {
         var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
