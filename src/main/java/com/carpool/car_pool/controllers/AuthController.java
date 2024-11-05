@@ -93,4 +93,23 @@ public class AuthController {
     public ResponseEntity<UserResponse> getUser() {
         return ResponseEntity.ok(currentUserService.getCurrentUserResponse());
     }
+
+    @PostMapping("/password-reset-request")
+    public ResponseEntity<?> requestPasswordReset(
+            @RequestBody @Valid PasswordResetRequest passwordResetRequest
+            ){
+        authService.createPasswordResetToken(passwordResetRequest.getEmail());
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestBody @Valid ResetPasswordRequest resetPasswordRequest
+    ){
+        authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getNewPassword());
+
+        return ResponseEntity.ok().build();
+    }
 }
