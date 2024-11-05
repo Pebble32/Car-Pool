@@ -26,8 +26,6 @@ public class AuthenticationService {
     private final UserConverter userConverter;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
-    private final UserConverter userConverter;
-    private final PasswordEncoder passwordEncoder;
 
     @Value("${password.reset.toekn.expiration.minutes:60}")
     private int tokenExpirationMinutes;
@@ -96,7 +94,7 @@ public class AuthenticationService {
         }
 
         UserEntity user = resetToken.getUser();
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(newPassword);
         userRepository.save(user);
 
         passwordResetTokenRepository.delete(resetToken);

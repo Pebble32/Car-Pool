@@ -8,6 +8,15 @@ spring:
   session:
     timeout: 30m
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: someemail@gmail.com
+    password: secretpassword
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 springdoc:
   default-produces-media-type: application/json
 
