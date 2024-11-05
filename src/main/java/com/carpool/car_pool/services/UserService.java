@@ -4,6 +4,7 @@ import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.ProfilePictureEntity;
+import com.carpool.car_pool.repositories.entities.RideRequestsEntity;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.converters.UserConverter;
 import jakarta.validation.constraints.NotNull;
@@ -34,6 +35,9 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final FileStorageService fileStorageService;
+    private final CurrentUserService currentUserService;
+    private final EmailService emailService;
 
     /**
      * Retrieves paginated list of all users.
@@ -146,5 +150,21 @@ public class UserService {
             throw new RuntimeException("No profile picture found");
         }
         return profilePicture.getBase64Image();
+    }
+
+    /**
+     * Sends a notification to a given {@link UserEntity} with a given message.
+     *
+     * @param user    The {@link UserEntity} that should receive the notification.
+     * @param message The message that goes with the notification.
+     */
+    public void sendNotification(UserEntity user, String message) {
+        emailService.sendSimpleEmail(user.getEmail(), "some subject", message);
+        // TODO: Sends email and pop up notification
+    }
+
+    public void sendRideRequestNotification(UserEntity receiver, RideRequestsEntity rideRequest) {
+        emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
+        // TODO: Sends email and pop up notification
     }
 }

@@ -7,6 +7,17 @@ spring:
       max-request-size: 10MB
   session:
     timeout: 30m
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: no.reply.car.pool.hi@gmail.com
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 springdoc:
   default-produces-media-type: application/json
