@@ -86,4 +86,20 @@ public class AuthenticationService {
         emailService.sendEmail(user.getEmail(), subject, message);
     }
 
+
+    public void resetPassword(String token, String newPassword){
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invaild or expired password reset token"));
+
+        if (resetToken.getExpirDate().isBefore(LocalDateTime.now())){
+            throw new RuntimeException("Password reset token has be expired");
+        }
+
+        UserEntity user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+    }
+
 }
