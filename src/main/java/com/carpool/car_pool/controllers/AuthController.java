@@ -1,10 +1,13 @@
 package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.AuthenticationRequest;
+import com.carpool.car_pool.controllers.dtos.PasswordResetConfirmRequest;
+import com.carpool.car_pool.controllers.dtos.PasswordResetRequest;
 import com.carpool.car_pool.controllers.dtos.RegisterRequest;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.services.AuthenticationService;
 import com.carpool.car_pool.services.CurrentUserService;
+import com.carpool.car_pool.services.PasswordResetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -30,6 +33,7 @@ public class AuthController {
 
     private final AuthenticationService authService;
     private final CurrentUserService currentUserService;
+    private final PasswordResetService passwordResetService;
 
     /**
      * Endpoint to authenticate a user.
@@ -93,4 +97,23 @@ public class AuthController {
     public ResponseEntity<UserResponse> getUser() {
         return ResponseEntity.ok(currentUserService.getCurrentUserResponse());
     }
+
+    @PostMapping("/password-reset-request")
+    public ResponseEntity<?> passwordResetRequest(
+            @RequestBody @Valid PasswordResetRequest passwordResetRequest
+            ){
+        passwordResetService.createPasswordResetToken(passwordResetRequest.getEmail());
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/password-reset-confirm")
+    public ResponseEntity<?> passwordResetConfirm(
+            @RequestBody @Valid PasswordResetConfirmRequest passwordResetConfirmRequest
+            ){
+       passwordResetService.resetPassword(passwordResetConfirmRequest.getToken());
+
+       return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
