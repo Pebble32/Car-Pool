@@ -83,6 +83,7 @@ public class UserService {
             if (originalImage == null) {
                 throw new RuntimeException("Invalid image file");
             }
+        
 
     /**
      * Uploads or changes the profile picture of the current user.
