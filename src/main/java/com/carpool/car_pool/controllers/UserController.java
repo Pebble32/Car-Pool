@@ -78,7 +78,7 @@ public class UserController {
      * @return ResponseEntity with HTTP status.
      */
     @PutMapping(value = "/profile-picture", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> chaneProfilePicture(
+    public ResponseEntity<?> changeProfilePicture(
             @RequestPart("file") MultipartFile file
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
