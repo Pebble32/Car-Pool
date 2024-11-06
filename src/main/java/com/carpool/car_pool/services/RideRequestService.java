@@ -42,6 +42,7 @@ public class RideRequestService {
     private final RideOfferRepository rideOfferRepository;
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
+    private final UserService userService;
 
     /**
      * Creates a new ride request for a specific ride offer.
@@ -81,6 +82,8 @@ public class RideRequestService {
                 .requester(currentUser)
                 .requestStatus(PENDING)
                 .build();
+
+        userService.sendRideRequestNotification(rideOffer.getCreator(), rideRequestEntity);
 
         return rideRequestRepository.save(rideRequestEntity).getId();
     }

@@ -28,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -166,11 +168,12 @@ public class RideOfferService {
      * @param startLocation The starting location of the ride.
      * @param endLocation The destination of the ride.
      * @param departureTime The departure time of the ride.
+     * @param status The status of the ride.
      * @param page The page number (zero-based).
      * @param size The size of the page.
      * @return A {@link PageResponse} containing ride offers.
      */
-    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, int page, int size) {
+    public PageResponse<RideOfferResponse> filterRides(String startLocation, String endLocation, LocalDateTime departureTime, RideStatus status, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
 
         Specification<RideOfferEntity> spec = Specification.where(null);
@@ -183,6 +186,9 @@ public class RideOfferService {
         }
         if (departureTime != null) {
             spec = spec.and(RideOfferSpecifications.hasDepartureTime(departureTime));
+        }
+        if (status != null) {
+            spec = spec.and(RideOfferSpecifications.hasStatus(status));
         }
 
         return getRideOfferResponsePageResponse(pageable, spec);
@@ -268,6 +274,20 @@ public class RideOfferService {
                 .values());
     }
 
+    /**
+     * Retrieves the ride offer history of a user.
+     *
+     * @param user The {@link UserEntity} to retrieve the ride offer history for.
+     * @return A list of {@link RideOfferResponse} representing the ride offer history.
+     */
+    public List<RideOfferResponse> getRideOfferHistory(UserEntity user) {
+        Optional<List<RideOfferEntity>> rideOfferEntities = rideOfferRepository.findByCreator(user);
+        return rideOfferEntities
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(rideOfferConverter::entityToDTO)
+                .toList();
+    }
 
     /**
      * Scheduled task to delete ride offers that have finished two years ago along with their associated ride requests.

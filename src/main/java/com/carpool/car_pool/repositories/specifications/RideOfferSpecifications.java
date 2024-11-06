@@ -26,6 +26,7 @@ public class RideOfferSpecifications {
     public static Specification<RideOfferEntity> hasEndLocation(String endLocation) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("endLocation"), endLocation);
     }
+
     /**
      * Specification to filter ride offers by their status.
      *

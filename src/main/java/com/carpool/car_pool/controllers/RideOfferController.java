@@ -5,6 +5,7 @@ import com.carpool.car_pool.controllers.dtos.RideOfferRequest;
 import com.carpool.car_pool.controllers.dtos.RideOfferResponse;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.common.PageResponse;
+import com.carpool.car_pool.repositories.entities.RideStatus;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.RideOfferService;
@@ -147,6 +148,7 @@ public class RideOfferController {
      * @param startLocation The starting location of the ride.
      * @param endLocation The destination of the ride.
      * @param departureTime The departure time of the ride.
+     * @param status The status of the ride.
      * @return ResponseEntity containing a paginated list of {@link RideOfferResponse}.
      */
     @GetMapping("/filter")
@@ -155,9 +157,10 @@ public class RideOfferController {
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             @RequestParam(name = "startLocation", required = false) String startLocation,
             @RequestParam(name = "endLocation", required = false) String endLocation,
-            @RequestParam(name = "departureTime", required = false) LocalDateTime departureTime
+            @RequestParam(name = "departureTime", required = false) LocalDateTime departureTime,
+            @RequestParam(name = "status", required = false) RideStatus status
     ) {
-        return ResponseEntity.ok(rideOfferService.filterRides(startLocation, endLocation, departureTime, page, size));
+        return ResponseEntity.ok(rideOfferService.filterRides(startLocation, endLocation, departureTime, status, page, size));
     }
 
     /**
@@ -188,5 +191,15 @@ public class RideOfferController {
         UserEntity currentUser = currentUserService.getCurrentUser();
         rideOfferService.rideFinished(id, currentUser);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Retrieves the ride history of the current user.
+     * @return ResponseEntity containing a list of {@link RideOfferResponse}.
+     */
+    @GetMapping("/user-rideHistory")
+    public ResponseEntity<List<RideOfferResponse>> getRideHistory() {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        return ResponseEntity.ok(rideOfferService.getRideOfferHistory(currentUser));
     }
 }
