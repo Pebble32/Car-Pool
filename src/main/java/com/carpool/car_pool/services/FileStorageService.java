@@ -21,14 +21,6 @@ public class FileStorageService {
     @Value("${spring.file.upload.photos-output-path}")
     private String fileUploadPath;
 
-    /**
-     * Saves a profile picture for a specific user.
-     *
-     * @param file   The profile picture file to upload. Must be a valid image file.
-     * @param userId The unique identifier of the user uploading the profile picture.
-     * @return The relative path of the saved profile picture, or {@code null} if the upload fails.
-     * @throws IllegalArgumentException if the file type is not allowed or the file size exceeds the limit.
-     */
     public String saveProfilePicture(
             @NotNull MultipartFile file,
             @NotNull Long userId
@@ -37,14 +29,6 @@ public class FileStorageService {
         return uploadFile(file, fileUploadSubPath);
     }
 
-    /**
-     * Uploads a file to the specified subdirectory.
-     *
-     * @param sourceFile         The source file to upload.
-     * @param fileUploadSubPath  The subdirectory path where the file will be stored.
-     * @return The relative path of the uploaded file, or {@code null} if the upload fails.
-     * @throws IllegalArgumentException if the file type is not allowed or the file size exceeds the limit.
-     */
     private String uploadFile(
             @NotNull MultipartFile sourceFile,
             @NotNull String fileUploadSubPath
@@ -87,12 +71,6 @@ public class FileStorageService {
         }
     }
 
-    /**
-     * Retrieves the file extension from the original filename.
-     *
-     * @param originalFilename The original name of the file.
-     * @return The file extension in lowercase, or an empty string if none exists.
-     */
     private String getFileExtension(String originalFilename) {
         if (originalFilename == null || originalFilename.isEmpty()) {
             return "";
@@ -104,31 +82,8 @@ public class FileStorageService {
         return originalFilename.substring(lastDotIndex + 1).toLowerCase();
     }
 
-    /**
-     * Checks whether the provided file extension is allowed.
-     *
-     * @param fileExtension The file extension to check.
-     * @return {@code true} if the file type is allowed; {@code false} otherwise.
-     */
     private boolean isAllowedFileType(String fileExtension) {
         List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png");
         return allowedExtensions.contains(fileExtension.toLowerCase());
-    }
-
-    /**
-     * Deletes an existing profile picture from the filesystem.
-     *
-     * @param profilePicturePath The relative path of the profile picture to delete.
-     */
-    public void deleteProfiePicture(String profilePicturePath) {
-        String fullPath = fileUploadPath+ File.separator + profilePicturePath;
-        Path path = Paths.get(fullPath);
-
-        try{
-           Files.deleteIfExists(path);
-           log.info("Deleted old profile picture");
-        } catch (IOException e){
-            log.error("Could not delete old profile picture", e);
-        }
     }
 }
