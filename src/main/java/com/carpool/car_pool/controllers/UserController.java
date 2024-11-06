@@ -8,12 +8,7 @@ import com.carpool.car_pool.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -73,4 +68,22 @@ public class UserController {
         UserEntity currentUser = currentUserService.getCurrentUser();
         return ResponseEntity.ok().body(userService.getProfilePicture(currentUser));
     }
+
+    /**
+     * Changes the profile picture of the current user.
+     * This endpoint performs the same function as {@code uploadProfilePicture} and is provided
+     * for semantic clarity in the API.
+     *
+     * @param file The profile picture file.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping(value = "/profile-picture", consumes = MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> chaneProfilePicture(
+            @RequestPart("file") MultipartFile file
+    ){
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.uploadProfilePicture(file, currentUser);
+        return ResponseEntity.accepted().build();
+    }
+
 }
