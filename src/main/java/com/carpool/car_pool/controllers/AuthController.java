@@ -98,6 +98,14 @@ public class AuthController {
         return ResponseEntity.ok(currentUserService.getCurrentUserResponse());
     }
 
+    /**
+     * Endpoint to request a password reset. This will trigger the creation of a password reset token
+     * for the user identified by the given email. An email containing the password reset link
+     * will be sent to the user's email address.
+     *
+     * @param passwordResetRequest The request body containing the user's email address.
+     * @return ResponseEntity with HTTP status.
+     */
     @PostMapping("/password-reset-request")
     public ResponseEntity<?> passwordResetRequest(
             @RequestBody @Valid PasswordResetRequest passwordResetRequest
@@ -107,6 +115,12 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /**
+     * Endpoint to confirm a password reset request.
+     *
+     * @param passwordResetConfirmRequest The request containing the password reset token.
+     * @return ResponseEntity with HTTP status.
+     */
     @PostMapping("/password-reset-confirm")
     public ResponseEntity<?> passwordResetConfirm(
             @RequestBody @Valid PasswordResetConfirmRequest passwordResetConfirmRequest
