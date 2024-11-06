@@ -41,10 +41,7 @@ public class RideRequestService {
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
     private final PopNotificationService notificationService;
-<<<<<<< HEAD
     private final UserService userService;
-=======
->>>>>>> dc85880cc6857fdb1d8a1d89b73315f3adf2af46
 
     /**
      * Creates a new ride request for a specific ride offer.
