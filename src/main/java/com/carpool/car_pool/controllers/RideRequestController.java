@@ -1,6 +1,7 @@
 package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.common.PageResponse;
@@ -143,9 +144,9 @@ public class RideRequestController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/edit-request/{id}")
+    @PutMapping("/edit-request")
     public ResponseEntity<RideRequestResponse> editRideRequestStatus(
-            @PathVariable Long id
+            @RequestBody@Valid EditRideRequestRequest editRequest
     ){
         UserEntity currentUser = currentUserService.getCurrentUser();
         RideRequestResponse updateRequest = rideRequestService.editRideRequestStatus(editRequest, currentUser);
