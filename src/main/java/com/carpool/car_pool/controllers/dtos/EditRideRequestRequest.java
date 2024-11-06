@@ -17,8 +17,10 @@ public class EditRideRequestRequest {
     private RideRequestStatus status;
 
     public enum RideRequestStatus{
-        CANCELED,
-        REACTIVATED
+        PENDING,
+        ACCEPTED,
+        REJECTED,
+        CANCELED
     }
 
 }

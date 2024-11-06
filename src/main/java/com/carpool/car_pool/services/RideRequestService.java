@@ -295,7 +295,7 @@ public class RideRequestService {
 
 
     @Transactional
-    public RideRequestResponse editRideRequest(EditRideRequestRequest editRequest, UserEntity currentUser) {
+    public RideRequestResponse editRideRequestStatus(EditRideRequestRequest editRequest, UserEntity currentUser) {
 
         RideRequestsEntity rideRequest = rideRequestRepository.findById(editRequest.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride request not found"));
