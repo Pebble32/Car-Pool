@@ -1,6 +1,8 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.RideRequestController;
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.RideOfferRepository;
@@ -23,6 +25,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,7 @@ public class RideRequestService {
     private final RideRequestConverter rideRequestConverter;
     private final PopNotificationService notificationService;
     private final UserService userService;
+    private final RideRequestController rideRequestController;
 
     /**
      * Creates a new ride request for a specific ride offer.
@@ -286,5 +291,62 @@ public class RideRequestService {
         rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
 
         rideRequestRepository.delete(rideRequest);
+    }
+
+
+    @Transactional
+    public RideRequestResponse editRideRequest(EditRideRequestRequest editRequest, UserEntity currentUser) {
+
+        RideRequestsEntity rideRequest = rideRequestRepository.findById(editRequest.getRideRequestId())
+                .orElseThrow(() -> new RuntimeException("Ride request not found"));
+
+        if(!rideRequest.getRequester().equals(currentUser)){
+            throw new RuntimeException("Only owner can edit this ride offer");
+        }
+
+        RideOfferEntity rideOffer = rideOfferRepository.findById(rideRequest.getRideOffer().getId())
+                .orElseThrow(() -> new RuntimeException("Ride Offer not found"));
+
+        RequestStatus requestStatus = rideRequest.getRequestStatus();
+
+        final int MIN_CANCEL_TIME = 30;
+
+        // Logic for different status circumstances
+        if(requestStatus.equals(RequestStatus.ACCEPTED)){
+
+            LocalDateTime departureTime = rideOffer.getDepartureTime();
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            long minutesUntilDeparture = ChronoUnit.MINUTES.between(currentTime, departureTime);
+
+
+            if (minutesUntilDeparture < MIN_CANCEL_TIME){
+                throw new RuntimeException("Cannot cancel the ride request less than 30 minutes before departure");
+            } else{
+                rideRequest.setRequestStatus(RequestStatus.CANCELED);
+                rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
+            }
+
+        } else if(requestStatus.equals(RequestStatus.PENDING)){
+
+            rideRequest.setRequestStatus(RequestStatus.CANCELED);
+            rideOffer.setAvailableSeats(rideOffer.getAvailableSeats() + 1);
+
+        } else if(requestStatus.equals(RequestStatus.CANCELED)){
+
+            if (rideOffer.getAvailableSeats() == 0 || rideOffer.getStatus().equals(RideStatus.FINISHED)){
+                throw new RuntimeException("Ride offer is no longer available");
+            }
+
+            rideRequest.setRequestStatus(RequestStatus.PENDING);
+
+        }else{
+            throw new RuntimeException("Cannot handle the ride request status:" + requestStatus);
+        }
+
+        rideRequestRepository.save(rideRequest);
+        rideOfferRepository.save(rideOffer);
+
+        return rideRequestConverter.entityToDTO(rideRequest);
     }
 }
