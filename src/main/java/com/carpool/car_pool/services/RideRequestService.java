@@ -294,6 +294,15 @@ public class RideRequestService {
     }
 
 
+    /**
+     * Edits the status of an existing ride request after validating the requester and conditions.
+     *
+     * @param editRequest The {@link EditRideRequestRequest} containing the ride request ID and new status.
+     * @param currentUser The {@link UserEntity} making the request to edit the ride status.
+     * @return The updated {@link RideRequestResponse}.
+     * @throws RuntimeException if the ride request or ride offer is not found, the user is not the requester,
+     *                          invalid status, or if cancellation is attempted less than 30 minutes before departure.
+     */
     @Transactional
     public RideRequestResponse editRideRequestStatus(EditRideRequestRequest editRequest, UserEntity currentUser) {
 

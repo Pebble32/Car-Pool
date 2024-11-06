@@ -144,6 +144,12 @@ public class RideRequestController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Edits the status of an existing ride request.
+     *
+     * @param editRequest The {@link EditRideRequestRequest} containing the ride request ID and new status.
+     * @return ResponseEntity containing the updated {@link RideRequestResponse}.
+     */
     @PutMapping("/edit-request")
     public ResponseEntity<RideRequestResponse> editRideRequestStatus(
             @RequestBody@Valid EditRideRequestRequest editRequest
