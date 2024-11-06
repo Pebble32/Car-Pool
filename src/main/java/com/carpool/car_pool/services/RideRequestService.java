@@ -40,6 +40,7 @@ public class RideRequestService {
     private final RideOfferRepository rideOfferRepository;
     private final RideRequestRepository rideRequestRepository;
     private final RideRequestConverter rideRequestConverter;
+    private final PopNotificationService notificationService;
     private final UserService userService;
 
     /**
@@ -118,6 +119,7 @@ public class RideRequestService {
      * @return The updated {@link RideRequestResponse}.
      * @throws RuntimeException if the ride request is invalid or the user is not authorized.
      */
+    @Transactional
     public RideRequestResponse answerRideRequest(@Valid AnswerRideRequestRequest request, UserEntity currentUser) {
         var rideRequest = rideRequestRepository.findById(request.getRideRequestId())
                 .orElseThrow(() -> new RuntimeException("Ride Request Not Found"));
@@ -138,6 +140,7 @@ public class RideRequestService {
             throw new RuntimeException("You are not authorized to answer this ride request.");
         }
 
+        String notificationMessage;
         if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.ACCEPTED) {
             if (rideRequest.getRequestStatus().equals(RequestStatus.ACCEPTED)) {
                 throw new RuntimeException("Ride Request already accepted");
@@ -154,14 +157,24 @@ public class RideRequestService {
                 rideOffer.setStatus(UNAVAILABLE);
             }
 
+            notificationMessage = "Congratulations! Your request to join the ride from " +
+                    rideOffer.getStartLocation() + " to " + rideOffer.getEndLocation() +
+                    " at " + rideOffer.getDepartureTime().toString() + " has been ACCEPTED.";
+
         } else if (request.getAnswerStatus() == AnswerRideRequestRequest.AnswerStatus.REJECTED) {
             rideRequest.setRequestStatus(RequestStatus.REJECTED);
+            notificationMessage = "We're sorry! Your request to join the ride from " +
+                    rideOffer.getStartLocation() + " to " + rideOffer.getEndLocation() +
+                    " at " + rideOffer.getDepartureTime().toString() + " has been REJECTED.";
         } else {
             throw new RuntimeException("Invalid Request Status");
         }
 
         rideRequestRepository.save(rideRequest);
         rideOfferRepository.save(rideOffer);
+
+        String requesterEmail = rideRequest.getRequester().getEmail();
+        notificationService.sendNotificationToUser(requesterEmail, notificationMessage);
 
         return rideRequestConverter.entityToDTO(rideRequest);
     }
