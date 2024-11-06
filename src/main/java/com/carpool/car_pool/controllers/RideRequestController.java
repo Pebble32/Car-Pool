@@ -142,4 +142,14 @@ public class RideRequestController {
         rideRequestService.deleteRequest(currentUser, id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/edit-request/{id}")
+    public ResponseEntity<RideRequestResponse> editRideRequestStatus(
+            @PathVariable Long id
+    ){
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        RideRequestResponse updateRequest = rideRequestService.editRideRequestStatus(editRequest, currentUser);
+
+        return ResponseEntity.ok(updateRequest);
+    }
 }
