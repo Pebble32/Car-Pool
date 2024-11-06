@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+
+
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,8 +38,6 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-    private final FileStorageService fileStorageService;
-    private final CurrentUserService currentUserService;
     private final EmailService emailService;
 
     /**
@@ -164,6 +165,13 @@ public class UserService {
         // TODO: Sends email and pop up notification
     }
 
+
+    /**
+     * Sends a ride request notification to ride offer provider.
+     *
+     * @param receiver    The {@link UserEntity} that should receive the notification.
+     * @param rideRequest The message that goes with the notification.
+     */
     public void sendRideRequestNotification(UserEntity receiver, RideRequestsEntity rideRequest) {
         emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
         // TODO: Sends email and pop up notification
