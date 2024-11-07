@@ -1,5 +1,6 @@
 package com.carpool.car_pool.controllers.dtos;
 
+import com.carpool.car_pool.repositories.entities.RideStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,13 +15,6 @@ public class EditRideRequestRequest {
     private Long rideRequestId;
 
     @NotNull(message = "New request status cannot be null")
-    private RideRequestStatus status;
-
-    public enum RideRequestStatus{
-        PENDING,
-        ACCEPTED,
-        REJECTED,
-        CANCELED
-    }
+    private RideStatus status;
 
 }
