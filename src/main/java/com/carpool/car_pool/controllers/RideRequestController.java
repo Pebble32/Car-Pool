@@ -1,6 +1,7 @@
 package com.carpool.car_pool.controllers;
 
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
+import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestResponse;
 import com.carpool.car_pool.repositories.common.PageResponse;
@@ -141,5 +142,21 @@ public class RideRequestController {
         UserEntity currentUser = currentUserService.getCurrentUser();
         rideRequestService.deleteRequest(currentUser, id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Edits the status of an existing ride request.
+     *
+     * @param editRequest The {@link EditRideRequestRequest} containing the ride request ID and new status.
+     * @return ResponseEntity containing the updated {@link RideRequestResponse}.
+     */
+    @PutMapping("/edit-request")
+    public ResponseEntity<RideRequestResponse> editRideRequestStatus(
+            @RequestBody@Valid EditRideRequestRequest editRequest
+    ){
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        RideRequestResponse updateRequest = rideRequestService.editRideRequestStatus(editRequest, currentUser);
+
+        return ResponseEntity.ok(updateRequest);
     }
 }
