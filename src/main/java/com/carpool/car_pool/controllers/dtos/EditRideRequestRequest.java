@@ -15,6 +15,6 @@ public class EditRideRequestRequest {
     private Long rideRequestId;
 
     @NotNull(message = "New request status cannot be null")
-    private RideStatus status;
+    private String status;
 
 }

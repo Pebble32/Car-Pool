@@ -1,6 +1,5 @@
 package com.carpool.car_pool.services;
 
-import com.carpool.car_pool.controllers.RideRequestController;
 import com.carpool.car_pool.controllers.dtos.AnswerRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.EditRideRequestRequest;
 import com.carpool.car_pool.controllers.dtos.RideRequestRequest;
@@ -46,7 +45,6 @@ public class RideRequestService {
     private final RideRequestConverter rideRequestConverter;
     private final PopNotificationService notificationService;
     private final UserService userService;
-    private final RideRequestController rideRequestController;
 
     /**
      * Creates a new ride request for a specific ride offer.
