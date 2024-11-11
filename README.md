@@ -44,14 +44,8 @@ The university carpooling service provides a smart and eco-friendly alternative 
 
 - **Java 17**
 - **Spring Boot**
-  - Spring Web
-  - Spring Data JPA
-  - Spring WebSocket
-  - Spring Validation
-  - Spring Scheduling
 - **PostgreSQL**
 - **Hibernate**
-- **Lombok**
 - **Docker**
 - **Maven**
 - **STOMP and SockJS** (for real-time notifications)
