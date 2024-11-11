@@ -83,20 +83,20 @@ The repository includes a `docker-compose.yml` file for easy setup.
 
 2. **Run Docker Compose**
 
-  ```bash
-  docker-compose up -d
-  ```
-  This command will start the PostgreSQL database in Docker container. You can skip the `-d` part if you want to see logs of starting the container.
+   ```bash
+   docker-compose up -d
+   ```
+   This command will start the PostgreSQL database in Docker container. You can skip the `-d` part if you want to see logs of starting the container.
 
 3. **Start Spring Boot Application**
 
-Start spring boot application in any way you want. For example:
-```bash
-mvn clean install
-mvn spring-boot:run
-```
+   Start spring boot application in any way you want. For example:
+   ```bash
+   mvn clean install
+   mvn spring-boot:run
+   ```
 
-The repository includes `application-dev.yml` file and profile is set to `dev` by default to run it locally.
+   The repository includes `application-dev.yml` file and profile is set to `dev` by default to run it locally.
 
 ## API Documentation
 Comprehensive API documentation is available via Swagger UI.
