@@ -120,6 +120,12 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Updates the user's password.
+     * @param oldPassword The user's old password.
+     * @param newPassword The user's new password.
+     * @return ResponseEntity with HTTP status.
+     */
     @PutMapping("/update/password")
     public ResponseEntity<?> updateUserPassword(
             @RequestParam(name = "oldPassword") String oldPassword,
