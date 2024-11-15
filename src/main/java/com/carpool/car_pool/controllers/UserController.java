@@ -92,4 +92,31 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Updates the user's information.
+     * @param firstName The user's first name.
+     * @param lastName The user's last name.
+     * @param phoneNumber The user's phone number.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName,
+            @RequestParam(name = "phoneNumber", required = false) String phoneNumber
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+
+        if (firstName != null) {
+            userService.changeUsersFirstName(currentUser, firstName);
+        }
+        if (lastName != null) {
+            userService.changeUsersLastName(currentUser, lastName);
+        }
+        if (phoneNumber != null) {
+            userService.changeUsersPhoneNumber(currentUser, phoneNumber);
+        }
+
+        return ResponseEntity.accepted().build();
+    }
 }
