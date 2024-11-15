@@ -176,4 +176,52 @@ public class UserService {
         emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
         // TODO: Sends email and pop up notification
     }
+
+    /**
+     * Changes the first name the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their first name changed.
+     * @param newName The new first name.
+     */
+    public void changeUsersFirstName(UserEntity currentUser, String newName) {
+        currentUser.setFirstname(newName);
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Changes the last name of the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their last name changed.
+     * @param newName The new last name.
+     */
+    public void changeUsersLastName(UserEntity currentUser, String newName) {
+        currentUser.setLastname(newName);
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Changes the phone number of the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their phone number changed.
+     * @param newNumber The new phone number.
+     */
+    public void changeUsersPhoneNumber(UserEntity currentUser, String newNumber) {
+        currentUser.setPhoneNumber(newNumber);
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Changes the password of the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their password changed.
+     * @param newPassword The new password.
+     */
+    public void changeUsersPassword(UserEntity currentUser, String oldPassword, String newPassword) {
+        if(!currentUser.getPassword().equals(oldPassword)){
+            throw new RuntimeException("Old password is incorrect");
+        }
+        currentUser.setPassword(newPassword);
+        userRepository.save(currentUser);
+    }
+
 }

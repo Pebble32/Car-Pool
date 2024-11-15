@@ -92,4 +92,47 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Updates the user's information.
+     * @param firstName The user's first name.
+     * @param lastName The user's last name.
+     * @param phoneNumber The user's phone number.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName,
+            @RequestParam(name = "phoneNumber", required = false) String phoneNumber
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+
+        if (firstName != null) {
+            userService.changeUsersFirstName(currentUser, firstName);
+        }
+        if (lastName != null) {
+            userService.changeUsersLastName(currentUser, lastName);
+        }
+        if (phoneNumber != null) {
+            userService.changeUsersPhoneNumber(currentUser, phoneNumber);
+        }
+
+        return ResponseEntity.accepted().build();
+    }
+
+    /**
+     * Updates the user's password.
+     * @param oldPassword The user's old password.
+     * @param newPassword The user's new password.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/update/password")
+    public ResponseEntity<?> updateUserPassword(
+            @RequestParam(name = "oldPassword") String oldPassword,
+            @RequestParam(name = "newPassword") String newPassword
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.changeUsersPassword(currentUser, oldPassword, newPassword);
+        return ResponseEntity.accepted().build();
+    }
 }
