@@ -119,4 +119,14 @@ public class UserController {
 
         return ResponseEntity.accepted().build();
     }
+
+    @PutMapping("/update/password")
+    public ResponseEntity<?> updateUserPassword(
+            @RequestParam(name = "oldPassword") String oldPassword,
+            @RequestParam(name = "newPassword") String newPassword
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.changeUsersPassword(currentUser, oldPassword, newPassword);
+        return ResponseEntity.accepted().build();
+    }
 }

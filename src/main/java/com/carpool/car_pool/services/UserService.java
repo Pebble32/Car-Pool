@@ -210,4 +210,18 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    /**
+     * Changes the password of the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their password changed.
+     * @param newPassword The new password.
+     */
+    public void changeUsersPassword(UserEntity currentUser, String oldPassword, String newPassword) {
+        if(!currentUser.getPassword().equals(oldPassword)){
+            throw new RuntimeException("Old password is incorrect");
+        }
+        currentUser.setPassword(newPassword);
+        userRepository.save(currentUser);
+    }
+
 }
