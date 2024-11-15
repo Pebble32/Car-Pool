@@ -98,9 +98,7 @@ public class UserController {
 
     /**
      * Updates the user's information.
-     * @param firstName The user's first name.
-     * @param lastName The user's last name.
-     * @param phoneNumber The user's phone number.
+     * @param userInfoChangeRequest The request containing the user's new information.
      * @return ResponseEntity with HTTP status.
      */
     @PutMapping("/update")
