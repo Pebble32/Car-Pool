@@ -102,7 +102,7 @@ public class UserController {
      * @return ResponseEntity with HTTP status.
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<?> updateUserInfo(
             @RequestBody @Valid UserInfoChangeRequest userInfoChangeRequest
     ) {
         UserEntity currentUser = currentUserService.getCurrentUser();
