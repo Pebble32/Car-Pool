@@ -43,7 +43,4 @@ server:
       cookie:
         same-site: None
         secure: true
-  port: 8080  # Azure App Service assigns port via PORT env variable
-
-# Heroku-style:
-# port: ${PORT:8080}
+  port: ${PORT:8080}  # Azure App Service provides the PORT environment variable
