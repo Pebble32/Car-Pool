@@ -1,5 +1,7 @@
 package com.carpool.car_pool.services;
 
+import com.carpool.car_pool.controllers.dtos.PasswordChangeRequest;
+import com.carpool.car_pool.controllers.dtos.UserInfoChangeRequest;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
 import com.carpool.car_pool.repositories.UserRepository;
 import com.carpool.car_pool.repositories.common.PageResponse;
@@ -18,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-
-
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -176,4 +176,38 @@ public class UserService {
         emailService.sendRideRequestNotificationEmail(receiver, rideRequest);
         // TODO: Sends email and pop up notification
     }
+
+
+    /**
+     * Changes the information of the current user.
+     * @param currentUser The current logged-in user.
+     * @param userInfoChangeRequest The request containing the updated user information.
+     */
+    public void changeUsersInfo(UserEntity currentUser, UserInfoChangeRequest userInfoChangeRequest) {
+        if (userInfoChangeRequest.getFirstName() != null) {
+            currentUser.setFirstname(userInfoChangeRequest.getFirstName());
+        }
+        if (userInfoChangeRequest.getLastName() != null) {
+            currentUser.setLastname(userInfoChangeRequest.getLastName());
+        }
+        if (userInfoChangeRequest.getPhoneNumber() != null) {
+            currentUser.setPhoneNumber(userInfoChangeRequest.getPhoneNumber());
+        }
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Changes the password of the current user.
+     *
+     * @param currentUser    The {@link UserEntity} that should have their password changed.
+     * @param passwordChangeRequest The request containing the old and new password.
+     */
+    public void changeUsersPassword(UserEntity currentUser, PasswordChangeRequest passwordChangeRequest) {
+        if(!currentUser.getPassword().equals(passwordChangeRequest.getOldPassword())){
+            throw new RuntimeException("Old password is incorrect");
+        }
+        currentUser.setPassword(passwordChangeRequest.getNewPassword());
+        userRepository.save(currentUser);
+    }
+
 }

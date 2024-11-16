@@ -1,20 +1,24 @@
 package com.carpool.car_pool.controllers;
 
+import com.carpool.car_pool.controllers.dtos.PasswordChangeRequest;
 import com.carpool.car_pool.controllers.dtos.UserResponse;
+import com.carpool.car_pool.controllers.dtos.UserInfoChangeRequest;
 import com.carpool.car_pool.repositories.common.PageResponse;
 import com.carpool.car_pool.repositories.entities.UserEntity;
 import com.carpool.car_pool.services.CurrentUserService;
 import com.carpool.car_pool.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -92,4 +96,31 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
+    /**
+     * Updates the user's information.
+     * @param userInfoChangeRequest The request containing the user's new information.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUserInfo(
+            @RequestBody @Valid UserInfoChangeRequest userInfoChangeRequest
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.changeUsersInfo(currentUser, userInfoChangeRequest);
+        return ResponseEntity.accepted().build();
+    }
+
+    /**
+     * Updates the user's password.
+     * @param passwordChangeRequest The request containing the user's old and new password.
+     * @return ResponseEntity with HTTP status.
+     */
+    @PutMapping("/update/password")
+    public ResponseEntity<?> updateUserPassword(
+            @RequestBody @Valid PasswordChangeRequest passwordChangeRequest
+    ) {
+        UserEntity currentUser = currentUserService.getCurrentUser();
+        userService.changeUsersPassword(currentUser, passwordChangeRequest);
+        return ResponseEntity.accepted().build();
+    }
 }
