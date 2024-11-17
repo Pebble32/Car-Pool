@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    @Value("${CORS_ALLOWED_ORIGINS:http://localhost:3000}")
+    @Value("${CORS_ALLOWED_ORIGINS:https://brave-moss-04e458603.5.azurestaticapps.net}")
     private String[] allowedOrigins;
 
     /**
