@@ -3,7 +3,7 @@ name: Build and deploy Jar app to Azure Web App - carpool-backend-app
 on:
   push:
     branches:
-      - deployment/initial
+      - main
   workflow_dispatch:
 
 jobs:
