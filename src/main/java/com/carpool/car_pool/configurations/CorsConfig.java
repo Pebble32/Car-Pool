@@ -1,4 +1,4 @@
-package com.yourpackage.config;
+package com.carpool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +13,11 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/v1/**") // Apply CORS to /api/v1/**
-                        .allowedOrigins("https://brave-moss-04e458603.5.azurestaticapps.net")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                registry.addMapping("/**") // Apply to all endpoints
+                        .allowedOrigins("*") // Allow all origins
+                        .allowedMethods("*") // Allow all HTTP methods
+                        .allowedHeaders("*") // Allow all headers
+                        .allowCredentials(true); // Allow credentials
             }
         };
     }
