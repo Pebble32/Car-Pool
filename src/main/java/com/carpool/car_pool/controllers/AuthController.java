@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller for handling authentication and registration operations.
  */
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("auth")
 @RequiredArgsConstructor
