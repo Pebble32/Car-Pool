@@ -17,7 +17,7 @@ public class CorsConfig {
                         .allowedOrigins("https://brave-moss-04e458603.5.azurestaticapps.net") // Specify your frontend origin
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Specify allowed HTTP methods
                         .allowedHeaders("*") // Allow all headers or specify as needed
-                        .allowCredentials(true) // Allow credentials
+                        .allowCredentials(true); // Allow credentials
             }
         };
     }
