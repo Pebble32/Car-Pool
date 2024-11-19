@@ -14,10 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOrigins("*") // Allow all origins
-                        .allowedMethods("*") // Allow all HTTP methods
-                        .allowedHeaders("*") // Allow all headers
-                        .allowCredentials(true); // Allow credentials
+                        .allowedOrigins("https://brave-moss-04e458603.5.azurestaticapps.net") // Specify your frontend origin
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Specify allowed HTTP methods
+                        .allowedHeaders("*") // Allow all headers or specify as needed
+                        .allowCredentials(true) // Allow credentials
             }
         };
     }
