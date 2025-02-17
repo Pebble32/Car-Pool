@@ -13,11 +13,16 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOrigins("https://kind-sea-06ef2fa0f.5.azurestaticapps.net") // Specify your frontend origin
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Specify allowed HTTP methods
-                        .allowedHeaders("*") // Allow all headers or specify as needed
-                        .allowCredentials(true); // Allow credentials
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                            "http://localhost:3000",
+                            "http://localhost:4200",
+                            "http://10.0.2.2:8088",
+                            "https://kind-sea-06ef2fa0f.5.azurestaticapps.net"
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
